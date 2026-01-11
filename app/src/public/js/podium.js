@@ -172,50 +172,54 @@ function getVibrantColor(imgSrc, callback) {
     const img = new Image();
     img.crossOrigin = 'Anonymous';
 
-    img.onload = function() {
-        const canvas = document.createElement('canvas');
-        const context = canvas.getContext('2d');
-        canvas.width = img.width;
-        canvas.height = img.height;
+    img.onload = function () {
+        try {
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            const size = 48;
+            canvas.width = size;
+            canvas.height = size;
 
-        context.drawImage(img, 0, 0);
+            context.drawImage(img, 0, 0, size, size);
 
-        const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-        const data = imageData.data;
-        let colorMap = {};
+            const imageData = context.getImageData(0, 0, size, size);
+            const data = imageData.data;
+            let topScore = 0;
+            let topColor = null;
 
-        for (let i = 0; i < data.length; i += 4) {
-            const r = data[i];
-            const g = data[i + 1];
-            const b = data[i + 2];
-            const alpha = data[i + 3] / 255;
+            for (let i = 0; i < data.length; i += 4) {
+                const r = data[i];
+                const g = data[i + 1];
+                const b = data[i + 2];
+                const alpha = data[i + 3] / 255;
 
-            if (alpha < 0.1) continue; // Skip nearly transparent pixels
+                if (alpha < 0.5) continue;
 
-            const hsl = rgbToHsl(r, g, b);
-            const saturation = hsl[1];
-            const lightness = hsl[2];
+                const hsl = rgbToHsl(r, g, b);
+                const saturation = hsl[1];
+                const lightness = hsl[2];
 
-            // Adjust the saturation to make the color more vibrant
-            const adjustedSaturation = Math.min(1, saturation * 1.5); // Increase saturation by 50%
+                if (lightness < 0.15 || lightness > 0.85) continue;
 
-            if (lightness > 0.2 && lightness < 0.8) {
-                const vibrantHsl = [hsl[0], adjustedSaturation, hsl[2]];
-                const vibrantRgb = hslToRgb(...vibrantHsl);
-                const key = vibrantRgb.join(',');
-
-                if (!colorMap[key]) {
-                    colorMap[key] = 0;
+                const score = saturation * 100 + lightness * 10;
+                if (score > topScore) {
+                    topScore = score;
+                    topColor = [r, g, b];
                 }
-                colorMap[key] += 1;
             }
+
+            if (topColor) {
+                callback(`rgb(${topColor.join(',')})`);
+            } else {
+                callback(null);
+            }
+        } catch (error) {
+            callback(null);
         }
+    };
 
-        const vibrantColor = Object.keys(colorMap).reduce(
-            (a, b) => colorMap[a] > colorMap[b] ? a : b
-        );
-
-        callback(`rgb(${vibrantColor})`);
+    img.onerror = function () {
+        callback(null);
     };
 
     img.src = imgSrc;
@@ -317,6 +321,8 @@ async function nextRound() {
 
         document.getElementById('track-name').innerHTML = "Unknown Track";
         document.getElementById('track-author').innerHTML = "Unknown Artist";
+        document.getElementById('track-name').style.color = '';
+        document.getElementById('track-author').style.color = '';
         document.getElementById("track-image").style.boxShadow = `0 0 0`;
         document.getElementById("track-image").style.backgroundImage = "none";
         document.getElementById('track-guessed-by').innerHTML = "N/A";
@@ -334,12 +340,14 @@ async function nextRound() {
         }
 
         trackName = limitedTracks[currentTrack].track.name;
-        //TODO: FIX getVibrantColor -> Maybe preform calculations on backend?
-        //getVibrantColor(limitedTracks[currentTrack].track.album.images[0].url, (color) => {
-        //    accentColorString = color;
-        //});
-        accentColorString = "rgb(255,255,255)"
+        accentColorString = "rgb(245,245,245)";
         trackIMG = limitedTracks[currentTrack].track.album.images[0].url;
+        getVibrantColor(trackIMG, (color) => {
+            if (color) {
+                accentColorString = color;
+                applyAccentGlow();
+            }
+        });
         trackURI = limitedTracks[currentTrack].track.uri;
         artistURIs = limitedTracks[currentTrack].track.artists.map(artist => artist.uri);
         albumURI = limitedTracks[currentTrack].track.album.uri;
@@ -377,6 +385,20 @@ function updateDisplay(){
         document.getElementById("track-name").innerHTML = trackName;
     if(artistGuessed)
         document.getElementById("track-author").innerHTML = trackArtists;
+}
+
+function applyAccentGlow() {
+    if (nameGuessed) {
+        document.getElementById("track-image").style.boxShadow = `0 0 50px ${accentColorString}`;
+        document.getElementById("track-name").style.color = accentColorString;
+        document.getElementById("track-guessed-by-circle").style.boxShadow = `0 0 30px ${accentColorString}`;
+        document.getElementById("track-guessed-by-i").style.color = `${accentColorString}`;
+    }
+    if (artistGuessed) {
+        document.getElementById("track-author").style.color = accentColorString;
+        document.getElementById("artist-guessed-by-circle").style.boxShadow = `0 0 30px ${accentColorString}`;
+        document.getElementById("artist-guessed-by-i").style.color = `${accentColorString}`;
+    }
 }
 
 function formatGameString(msg) {
