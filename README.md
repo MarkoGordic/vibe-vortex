@@ -1,1 +1,1 @@
-# vibe-vortex
+# Vibe Vortex

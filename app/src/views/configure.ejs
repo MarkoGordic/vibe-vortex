@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Room Setup | Vibe Vortex</title>
+    <link rel="icon" type="image/x-icon" href="/img/logo.png">
+    <link rel="stylesheet" href="/css/configure.css">
+</head>
+<body>
+<div class="too-small">
+    <div class="too-small-content">
+        <i class="fas fa-exclamation-triangle"></i>
+        <p>Your screen is too small. Please use a larger device to access this feature.</p>
+
+        <button class="deactivate-room-button" onclick="deactivateRoom()">DISBAND ROOM</button>
+    </div>
+</div>
+
+<div class="tab-wrap">
+    <div class="tab-container">
+    <h3 id="room-code" style="color: white;margin-bottom: 10px">CODE: <%= roomCode %></h3>
+
+    <div class="tab" id="tab1">
+        <h2>Choose Game Type</h2>
+
+        <p class="description">Select one of the game types below to start your musical adventure.</p>
+
+        <div class="settings">
+            <div class="half" id="guessing">
+                <p>GUESSING</p>
+            </div>
+            <div class="half" id="continue-lyrics">
+                <p>LYRICS</p>
+            </div>
+        </div>
+
+        <div class="explanations">
+            <p id="guessing-explanation">
+                <strong>GUESSING:</strong> Dive into a world of musical mysteries! Can you name the song or artist? Put your knowledge to the test!
+            </p>
+            <p id="lyrics-explanation">
+                <strong>LYRICS:</strong> Challenge your memory! Complete the lyrics of well-known songs.
+            </p>
+        </div>
+    </div>
+
+    <div class="tab" id="tab2" style="display:none;">
+        <h2>Configure Game Preferences</h2>
+
+        <p class="description">Customize your game experience.</p>
+
+        <div class="preferences">
+            <div class="preference-item">
+                <label for="showTrackInfo">Show track information if not guessed?</label>
+                <input type="checkbox" id="showTrackInfo" name="showTrackInfo">
+            </div>
+        </div>
+    </div>
+
+    <div class="tab" id="tab3" style="display:none;">
+        <h2>Select Content</h2>
+        <p class="description">Choose the playlists that will be featured in your game. You can select from your own playlists, or from libraries from other players.</p>
+
+        <div class="track-range-container">
+            <input type="range" id="track-range" min="0" value="0">
+            <p id="selected-tracks">Selected Tracks: 0</p>
+        </div>
+
+        <div id="playlist-wrap" class="playlist-wrap"></div>
+    </div>
+
+    <div class="tab" id="tab4" style="display:none;">
+        <h2>Speaker Selection</h2>
+        <p class="description">Choose the speaker(s) for your game. Select from the available options.</p>
+        <button id="refresh-speakers" class="refresh-button" onclick="loadAndDisplayDevices()"><i class="fa fa-refresh"></i> Refresh</button>
+
+        <div id="speaker-selection-container">
+        </div>
+    </div>
+
+    <div class="tab" id="tab5" style="display:none;">
+        <h2>Manage Players</h2>
+        <p class="description">Here you can manage the players in your game. Invite friends, assign player roles, or remove players from the session.</p>
+
+        <ul id="playerList" class="player-list"></ul>
+
+        <button onclick="collectAndSendPreferences()">SAVE CONFIGURATION</button>
+    </div>
+
+    <div class="tab-navigation">
+        <button id="prevBtn" onclick="navigateTabs(-1)">Back</button>
+        <span class="tab-indicator"></span>
+        <span class="tab-indicator"></span>
+        <span class="tab-indicator"></span>
+        <span class="tab-indicator"></span>
+        <span class="tab-indicator"></span>
+        <button id="nextBtn" onclick="navigateTabs(1)">Next</button>
+    </div>
+
+    <button class="deactivate-room-button" onclick="deactivateRoom()">DISBAND ROOM</button>
+</div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://kit.fontawesome.com/e9dddd0b9b.js" crossorigin="anonymous"></script>
+<script src="/js/configure.js"></script>
+</body>
+</html>

@@ -1,0 +1,315 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;400;600&display=swap');
+
+:root {
+    --bg: #171717;
+    --panel: #1b1b1b;
+    --accent: #1DB954;
+    --accent-soft: rgba(29, 185, 84, 0.35);
+    --danger: #E02500;
+    --text: #ffffff;
+    --muted: #c9c9c9;
+    --shadow: 0 20px 45px rgba(0, 0, 0, 0.45);
+}
+
+*,
+*::before,
+*::after {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    overflow: hidden;
+}
+
+.left-container {
+    width: 70%;
+    float: left;
+    min-height: 100dvh;
+    filter: brightness(35%) saturate(110%);
+    background-image: url("../img/bg0.png");
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    position: relative;
+    animation: slowZoom 16s ease-in-out infinite alternate;
+}
+
+.left-container::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 20% 20%, rgba(29, 185, 84, 0.4), transparent 55%),
+        radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.2), transparent 50%);
+    opacity: 0.7;
+}
+
+.right-container {
+    width: 30%;
+    float: right;
+    background: linear-gradient(180deg, #151515 0%, #1a1a1a 100%);
+    min-height: 100dvh;
+    position: relative;
+    box-shadow: -10px 0 40px rgba(0, 0, 0, 0.5);
+}
+
+.footer {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.login-container,
+.register-container,
+.spotify-container {
+    width: 100%;
+    height: 100dvh;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px) scale(0.98);
+    transition: opacity 0.5s ease, visibility 0.5s ease, transform 0.6s ease;
+    color: var(--text);
+}
+
+.active-form {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.alert-msg {
+    color: var(--danger);
+    font-size: 0.95rem;
+    min-height: 20px;
+}
+
+.info {
+    color: var(--accent);
+}
+
+.login-container form,
+.register-container form,
+.spotify-content {
+    width: 350px;
+    animation: floatIn 0.8s ease;
+}
+
+.login-container input[type="email"],
+.login-container input[type="password"],
+.login-container input[type="text"],
+.register-container input[type="text"],
+.register-container input[type="email"],
+.register-container input[type="password"],
+.file-upload-input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: none;
+    outline: none;
+    border-bottom: 2px solid var(--accent);
+    background-color: transparent;
+    color: var(--text);
+    font-size: 16px;
+    display: block;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.login-container input:focus,
+.register-container input:focus,
+.file-upload-input:focus {
+    border-color: #2ff579;
+    box-shadow: 0 12px 20px -15px rgba(29, 185, 84, 0.6);
+}
+
+.password-group {
+    position: relative;
+}
+
+.eye-icon {
+    position: absolute;
+    right: 10px;
+    bottom: 16px;
+    cursor: pointer;
+}
+
+.eye-icon i {
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
+.eye-icon i:hover {
+    transform: scale(1.15);
+}
+
+.login-container label,
+.register-container label {
+    width: 100%;
+    margin-top: 20px;
+    color: var(--text);
+    font-size: 0.9rem;
+    display: block;
+}
+
+.login-container button,
+.register-container button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 20px;
+    border: none;
+    background-color: var(--accent);
+    color: var(--text);
+    font-size: 1rem;
+    cursor: pointer;
+    display: block;
+    border-radius: 6px;
+    box-shadow: 0 12px 25px -20px rgba(29, 185, 84, 0.7);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+.login-container button:hover,
+.register-container button:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+    background-color: #17a74b;
+}
+
+.form-msg {
+    font-size: 0.9rem;
+    text-align: center;
+    margin-top: 10px;
+    color: var(--muted);
+}
+
+.form-msg a {
+    text-decoration: none;
+    color: var(--accent);
+    cursor: pointer;
+}
+
+.spotify-container p {
+    font-size: 0.9rem;
+    color: var(--muted);
+}
+
+.spotify-container button {
+    padding: 10px 15px;
+    margin: 10px 0 0 0;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+.spotify-connect-btn {
+    background-color: var(--accent);
+    color: var(--text);
+    box-shadow: 0 14px 24px -18px rgba(29, 185, 84, 0.7);
+}
+
+.spotify-connect-btn i {
+    margin-right: 5px;
+    top: 2px;
+    position: relative;
+}
+
+.spotify-connect-btn:hover {
+    background-color: rgba(29, 185, 84, 0.8);
+    transform: translateY(-1px);
+}
+
+.continue-btn {
+    background-color: #cccccc;
+    color: #333333;
+}
+
+.continue-btn:hover {
+    background-color: #bbbbbb;
+    transform: translateY(-1px);
+}
+
+.file-upload-container {
+    margin: 20px 0;
+}
+
+.file-upload-label {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--text);
+    font-size: 0.9rem;
+}
+
+.file-upload-input::file-selector-button {
+    background-color: var(--accent);
+    color: var(--text);
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-right: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.file-upload-input::file-selector-button:hover {
+    background-color: #17a74b;
+}
+
+@keyframes floatIn {
+    0% {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slowZoom {
+    0% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(1.05);
+    }
+}
+
+@media screen and (max-width: 1400px) {
+    .left-container {
+        width: 60%;
+    }
+    .right-container {
+        width: 40%;
+    }
+}
+
+@media screen and (max-width: 1100px) {
+    .left-container {
+        width: 50%;
+    }
+    .right-container {
+        width: 50%;
+    }
+}
+
+@media screen and (max-width: 800px) {
+    .left-container {
+        display: none;
+    }
+    .right-container {
+        width: 100%;
+    }
+}

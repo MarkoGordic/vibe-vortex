@@ -1,0 +1,34 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files
+.env
+/*.env
+app/.env
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Logs
+logs
+*.log
+
+# Coverage
+coverage/
+
+# Build output
+dist/
+build/
+
+# OS
+.DS_Store
+
+# Docker volumes
+/db_data
+/uploads

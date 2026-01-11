@@ -1,0 +1,377 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;400;600&display=swap');
+
+:root {
+    --bg: #1a1a1a;
+    --accent: #1DB954;
+    --text: #ffffff;
+    --muted: #8c8c8c;
+}
+
+*,
+*::before,
+*::after {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    overflow: hidden;
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg);
+}
+
+.loader-player,
+.host-selection {
+    width: 100%;
+    height: 100dvh;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: var(--bg);
+    transition: opacity 0.5s ease-in-out;
+}
+
+.loader-content,
+.host-selection-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100dvh;
+}
+
+.loader-disclaimer {
+    color: var(--text);
+    margin-top: 100px;
+    font-size: 28px;
+    letter-spacing: 0.05em;
+}
+
+.loader {
+    width: 260px;
+    aspect-ratio: 1;
+    display: grid;
+    border: 4px solid transparent;
+    border-radius: 50%;
+    border-right-color: var(--accent);
+    animation: spin 1s infinite linear;
+}
+
+.loader::before,
+.loader::after {
+    content: "";
+    grid-area: 1/1;
+    margin: 2px;
+    border: inherit;
+    border-radius: 50%;
+    animation: spin 2s infinite;
+}
+
+.loader::after {
+    margin: 8px;
+    animation-duration: 3s;
+}
+
+@keyframes spin {
+    100% {
+        transform: rotate(1turn);
+    }
+}
+
+.podium {
+    width: 100%;
+    height: 100dvh;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: background-image 1.5s ease-in-out;
+    background-image: url("../img/podium.png");
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+}
+
+.podium-guessed-by {
+    width: 100%;
+    height: 100dvh;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.room-code-wrap {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 0;
+    height: 20px;
+    text-align: center;
+}
+
+.room-code-wrap p {
+    margin-top: 10px;
+    color: var(--text);
+}
+
+.podium-display-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100dvh;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.track-image {
+    width: 220px;
+    height: 220px;
+    background-color: #171717;
+    margin-bottom: 20px;
+    border-radius: 16px;
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0.9);
+    transition: box-shadow 0.5s ease-in-out, transform 0.5s ease;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+}
+
+.track-image:hover {
+    transform: scale(1.02);
+}
+
+.track-name {
+    font-size: 35px;
+    color: var(--text);
+}
+
+.track-author {
+    font-size: 28px;
+    color: var(--muted);
+}
+
+.podium-leaderboard {
+    position: absolute;
+    top: 0;
+    left: -400px;
+    height: 100vh;
+    width: 300px;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: left 2s ease-in-out;
+}
+
+.leaderboard-wrap {
+    max-width: 330px;
+    overflow: hidden;
+}
+
+.leaderboard-place {
+    display: inline-flex;
+    margin-bottom: 20px;
+}
+
+.leaderboard-placement {
+    font-size: 30px;
+}
+
+.leaderboard-placement-wrap {
+    width: 70px;
+    height: 70px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.leaderboard-place img {
+    width: 70px;
+    height: 70px;
+    border-radius: 100%;
+    margin-right: 10px;
+}
+
+.leaderboard-place-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 200px;
+}
+
+.leaderboard-name {
+    font-size: 20px;
+}
+
+.leaderboard-points {
+    font-size: 14px;
+}
+
+.podium-guessed-by-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    height: 100dvh;
+}
+
+.track-guessed-by-wrap,
+.artist-guessed-by-wrap {
+    text-align: center;
+    margin-left: 350px;
+    margin-right: 350px;
+    margin-bottom: 150px;
+}
+
+#artist-guessed-by,
+#track-guessed-by {
+    color: var(--text);
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.artist-guessed-by,
+.track-guessed-by {
+    width: 90px;
+    height: 90px;
+    border-radius: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text);
+    background-color: #212121;
+    box-shadow: 0 0 45px rgba(0, 0, 0, 0.9);
+    transition: box-shadow 0.5s ease-in-out;
+    font-size: 35px;
+}
+
+.podium-alerts {
+    width: 100%;
+    height: 130px;
+    position: absolute;
+    bottom: -200px;
+    left: 0;
+    transition: bottom 0.7s ease-in-out;
+}
+
+.podium-alerts-wrap {
+    display: flex;
+    justify-content: center;
+}
+
+.podium-alert {
+    width: 700px;
+    height: 80px;
+    display: inline-flex;
+    box-shadow: 0 0 35px rgba(255, 255, 255, 1);
+    background-color: #212121;
+    border-radius: 20px;
+}
+
+.alert-image {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#alert-img {
+    height: 60px;
+    width: 60px;
+    border-radius: 100%;
+}
+
+.alert-message {
+    height: 80px;
+    width: 620px;
+    display: flex;
+    text-align: left;
+    justify-content: center;
+    align-items: center;
+}
+
+#alert-msg {
+    width: 600px;
+    margin-left: 10px;
+    margin-right: 10px;
+    color: var(--text);
+    font-size: 20px;
+}
+
+.podium-final-leaderboard {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100dvh;
+    width: 100%;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 1s ease-in-out;
+}
+
+.podium-final-leaderboard-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    height: 100dvh;
+}
+
+.leaderboard-final-place img {
+    border-radius: 100%;
+}
+
+.final-place,
+.final-name {
+    color: var(--text);
+    font-size: 22px;
+}
+
+#place1-final {
+    text-align: center;
+    margin-bottom: 130px;
+    margin-left: 60px;
+    margin-right: 60px;
+}
+
+#place2-final,
+#place3-final {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+#place4-final,
+#place5-final {
+    text-align: center;
+    margin-left: 60px;
+    margin-right: 60px;
+}
+
+#place1-final img {
+    height: 160px;
+    width: 160px;
+    box-shadow: 0 0 55px gold;
+}
+
+#place2-final img {
+    height: 120px;
+    width: 120px;
+    box-shadow: 0 0 35px silver;
+}
+
+#place3-final img {
+    height: 120px;
+    width: 120px;
+    box-shadow: 0 0 35px #CD7F32;
+}
+
+#place4-final img,
+#place5-final img {
+    height: 80px;
+    width: 80px;
+}

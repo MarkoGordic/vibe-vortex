@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Marko Gordic">
+    <link rel="icon" type="image/x-icon" href="/img/logo.png">
+    <meta name="description" content="Login page for Vibe Vortex">
+
+    <title>Vibe Vortex</title>
+
+    <link rel="stylesheet" href="/css/index.css">
+</head>
+<body>
+    <div class="left-container"></div>
+    <div class="right-container">
+        <div class="login-container active-form" id="login-container">
+            <form action="/api/login" method="post">
+                <h1>LOGIN</h1>
+                <p class="alert-msg"></p>
+
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="example@test.rs">
+
+                <div class="password-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="SuperCoolPassword">
+                    <span onclick="togglePasswordVisibility('password')" class="eye-icon">
+                        <i class="fa-solid fa-eye"></i>
+                    </span>
+                </div>
+
+                <button type="submit" id="login-button">Login</button>
+                <p class="form-msg">Join the vibe! <a onclick="toggleForms()">Sign up now.</a></p>
+            </form>
+        </div>
+
+        <div class="register-container" id="register-container" style="display: none">
+            <form action="/api/register" method="post" enctype="multipart/form-data">
+                <h1>SIGN UP</h1>
+                <p class="alert-msg"></p>
+
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Super Cool Name">
+
+                <label for="email-new">Email</label>
+                <input type="email" id="email-new" name="email" placeholder="example@test.com">
+
+                <div class="file-upload-container">
+                    <label for="profile-picture" class="file-upload-label">Profile Picture</label>
+                    <input type="file" id="profile-picture" name="profilePicture" accept="image/*" class="file-upload-input">
+                </div>
+
+                <div class="password-group">
+                    <label for="password-new">Password</label>
+                    <input type="password" id="password-new" name="password" placeholder="ExtraStrongPass!123">
+                    <span onclick="togglePasswordVisibility('password-new')" class="eye-icon">
+                        <i class="fa-solid fa-eye"></i>
+                    </span>
+                </div>
+
+                <div class="password-group">
+                    <label for="password-repeated">Confirm Password</label>
+                    <input type="password" id="password-repeated" name="password-confirm" placeholder="ExtraStrongPass!123">
+                    <span onclick="togglePasswordVisibility('password-repeated')" class="eye-icon">
+                        <i class="fa-solid fa-eye"></i>
+                    </span>
+                </div>
+
+                <button type="submit" id="register-button">Sign Up</button>
+                <p class="form-msg">Ready to vibe again? <a onclick="toggleForms()">Log In.</a></p>
+            </form>
+
+        </div>
+
+        <% if (spotify_id === null && userID !== null) { %>
+            <div class="spotify-container" id="spotify-container">
+                <div class="spotify-content">
+                    <h1>CONNECT SPOTIFY</h1>
+                    <p>
+                        Enhance your experience by connecting your Spotify account, or continue with limited features.
+                    </p>
+
+                    <a href="spotify/code">
+                        <button class="spotify-connect-btn" id="spotify-connect-btn">
+                            <i class="fa-brands fa-spotify"></i>
+                            Connect Spotify
+                        </button>
+                    </a>
+
+                    <button class="continue-btn" onclick="window.location.href='/vortex/setup'">
+                        Continue Without Spotify
+                    </button>
+                </div>
+            </div>
+        <% } %>
+
+        <div class="footer">
+            <p>made by Gordic with 💚</p>
+        </div>
+    </div>
+
+    <script src="/js/login.js"></script>
+    <script src="https://kit.fontawesome.com/e9dddd0b9b.js" crossorigin="anonymous"></script>
+</body>
+</html>

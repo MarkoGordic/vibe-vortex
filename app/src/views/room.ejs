@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Marko Gordic">
+    <link rel="icon" type="image/x-icon" href="/img/logo.png">
+    <meta name="description" content="Vibe Vortex Game Room">
+
+    <title>Vibe Vortex | Game</title>
+
+    <link rel="stylesheet" href="/css/room.css">
+</head>
+<body>
+    <div class="loader-player" id="loader-content" <% if (host === true) { %> style="display: none" <% } %>>
+        <div class="loader-content">
+            <p class="loader-disclaimer">WAITING FOR HOST TO START THE VIBE</p>
+            <p style="color: #8c8c8c;margin-bottom: 30px;">please be patient</p>
+            <div class="loader"></div>
+
+            <p class="did-you-know-fact">Did you know?</p>
+
+            <button onclick="window.location.href='/vortex/room/leave'">LEAVE ROOM</button>
+        </div>
+    </div>
+
+    <% if (host === true) { %>
+        <div class="host-selection" id="host-selection">
+            <div class="host-selection-content">
+                <p class="host-disclaimer">CHOOSE ROLE OF THIS DEVICE</p>
+                <div style="display: inline-flex;">
+                    <div class="host-button" onclick="window.location.href='/vortex/podium'" id="podium">
+                        <span style="font-weight: bold">GAME DISPLAY</span>
+                    </div>
+                    <div class="host-button" id="player" onclick="switchToPlayerMode()">
+                        <span style="font-weight: bold">PLAYER</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <% } %>
+
+    <div class="player-controls" id="player-controls" style="display: none">
+        <div class="controls-content">
+            <div class="guess-section">
+                <img class="game-type-image" id="game-type-image">
+                <h1 class="room-code" id="room-code" style="margin-bottom: 20px"></h1>
+
+                <div class="guess-info">
+                    <i class="fas fa-user"></i><span id="artist-guessed-by">: <em>N/A</em></span>
+                </div>
+                <div class="guess-info">
+                    <i class="fas fa-music"></i><span id="track-guessed-by">: <em>N/A</em></span>
+                </div>
+                <div class="input-group">
+                    <input type="text" id="guess-input" placeholder="Enter your guess...">
+                    <button id="send-guess" onclick="sendGuess()">Send</button>
+                </div>
+                <p class="last-guess" id="last-guess">Last Guess: </p>
+                <% if (host !== true) { %>
+                    <button id="exit-game" onclick="window.location.href='/vortex/room/leave'">Exit Game</button>
+                <% } %>
+
+                <% if (host === true) { %>
+                    <button onclick="socket.emit('host_command', 'next_round')">NEXT ROUND</button>
+                    <button id="exit-game" onclick="socket.emit('host_command', 'end_game');deactivateRoom()">End Game</button>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://kit.fontawesome.com/e9dddd0b9b.js" crossorigin="anonymous"></script>
+    <script src="/js/room.js"></script>
+</body>
+</html>

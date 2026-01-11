@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Marko Gordic">
+    <link rel="icon" type="image/x-icon" href="/img/logo.png">
+    <meta name="description" content="Vibe Vortex Game Room">
+
+    <title>Vibe Vortex | Game</title>
+
+    <link rel="stylesheet" href="/css/podium.css">
+</head>
+<body>
+<div class="podium">
+    <div class="loader-player" id="loader-content">
+        <div class="loader-content">
+            <div class="loader"></div>
+
+            <p class="loader-disclaimer">WE ARE SETTING UP PODIUM FOR YOU. PLEASE BE PATIENT.</p>
+        </div>
+    </div>
+
+    <div class="room-code-wrap">
+        <p id="room-code">ROOM CODE: <%= roomCode %></p>
+    </div>
+
+    <div class="podium-display-wrap" id="podium-display-wrap" style="opacity: 0;">
+        <div class="track-image" id="track-image"></div>
+        <p class="track-name" id="track-name">Unknown Track</p>
+        <p class="track-author" id="track-author">Unknown Artist</p>
+    </div>
+
+    <div class="podium-guessed-by" id="podium-guessed-by" style="opacity: 0">
+        <div class="podium-guessed-by-wrap">
+            <div class="artist-guessed-by-wrap">
+                <div class="artist-guessed-by" id="artist-guessed-by-circle">
+                    <i class="fas fa-user" id="artist-guessed-by-i"></i>
+                </div>
+                <p id="artist-guessed-by">N/A</p>
+            </div>
+
+            <div class="track-guessed-by-wrap">
+                <div class="track-guessed-by" id="track-guessed-by-circle">
+                    <i class="fas fa-music" id="track-guessed-by-i"></i>
+                </div>
+                <p id="track-guessed-by">N/A</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="podium-leaderboard">
+        <div class="leaderboard-wrap">
+            <p style="font-size: 30px;color: white;margin-left: 20px;margin-bottom: 20px">LEADERBOARD</p>
+            <div class="leaderboard-place" id="place1"></div>
+            <div class="leaderboard-place" id="place2"></div>
+            <div class="leaderboard-place" id="place3"></div>
+            <div class="leaderboard-place" id="place4"></div>
+            <div class="leaderboard-place" id="place5"></div>
+            <div class="leaderboard-place" id="place6"></div>
+            <div class="leaderboard-place" id="place7"></div>
+            <div class="leaderboard-place" id="place8"></div>
+        </div>
+    </div>
+
+    <div class="podium-final-leaderboard" id="podium-final-leaderboard" style="opacity: 0;">
+        <div class="podium-final-leaderboard-wrap">
+            <div class="leaderboard-final-place" id="place4-final"></div>
+            <div class="leaderboard-final-place" id="place2-final"></div>
+            <div class="leaderboard-final-place" id="place1-final"></div>
+            <div class="leaderboard-final-place" id="place3-final"></div>
+            <div class="leaderboard-final-place" id="place5-final"></div>
+        </div>
+    </div>
+
+    <div class="podium-alerts" id="podium-alerts">
+        <div class="podium-alerts-wrap">
+            <div class="podium-alert" id="podium-alert">
+                <div class="alert-image">
+                    <img id="alert-img" src="">
+                </div>
+
+                <div class="alert-message">
+                    <p id="alert-msg"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://kit.fontawesome.com/e9dddd0b9b.js" crossorigin="anonymous"></script>
+<script src="/js/podium.js"></script>
+</body>
+</html>

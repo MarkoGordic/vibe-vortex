@@ -1,0 +1,37 @@
+services:
+  app:
+    build: ./app
+    container_name: vibe-vortex-app
+    ports:
+      - "1337:1337"
+    env_file:
+      - ./app/.env
+    depends_on:
+      database:
+        condition: service_healthy
+    volumes:
+      - uploads:/app/src/public/uploads
+    restart: unless-stopped
+
+  database:
+    image: mysql:8.0
+    container_name: vibe-vortex-db
+    environment:
+      MYSQL_DATABASE: ${DB_NAME:-vibe_vortex}
+      MYSQL_USER: ${DB_USER:-vortex}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-vortexpass}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootpass}
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "${DB_USER:-vortex}", "-p${DB_PASSWORD:-vortexpass}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  db_data:
+  uploads:
