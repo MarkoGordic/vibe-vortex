@@ -18,24 +18,33 @@
     box-sizing: border-box;
 }
 
+html,
+body {
+    height: 100%;
+}
+
 body {
     margin: 0;
     padding: 0;
     background: radial-gradient(circle at top, rgba(29, 185, 84, 0.12), transparent 60%), var(--bg);
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
     font-family: 'Poppins', sans-serif;
 }
 
 .tab-wrap {
     width: 100%;
-    height: 100dvh;
+    min-height: 100vh;
+    min-height: 100dvh;
     justify-content: center;
     align-items: center;
     display: flex;
+    padding: 20px 0;
 }
 
 .tab-container {
     width: 600px;
+    max-width: 94vw;
     margin: 20px auto;
     background-color: var(--panel);
     border-radius: 12px;
@@ -93,6 +102,7 @@ body {
     font-weight: bold;
     padding: 10px 20px;
     border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.35);
     backdrop-filter: blur(6px);
 }
 
@@ -372,7 +382,7 @@ input[type="range"]:hover::-moz-range-thumb {
 
 .playlist-info {
     display: block;
-    width: 470px;
+    width: 100%;
 }
 
 .playlist-icon {
@@ -514,13 +524,58 @@ input[type="range"]:hover::-moz-range-thumb {
 }
 
 @media screen and (max-width: 650px) {
-    .too-small {
-        display: flex;
+    .tab-wrap {
+        align-items: flex-start;
+    }
+
+    .tab-container {
+        padding: 18px;
+    }
+
+    .settings {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .half {
+        min-height: 140px;
+    }
+
+    .player-item {
+        height: auto;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .player-name {
+        font-size: 1rem;
+    }
+
+    .playlist-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .playlist-icon {
+        border-radius: 12px;
+    }
+
+    .device-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
     }
 }
 
-@media screen and (max-height: 790px) {
-    .too-small {
-        display: flex;
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
     }
 }

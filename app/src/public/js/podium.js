@@ -76,7 +76,7 @@ async function initializePlayersData(roomCode) {
         console.log(playerIds);
 
         const playersInfo = await fetchPlayersInfo(playerIds);
-        playersData = playersData.concat(playersInfo);
+        playersData = playersInfo;
 
         console.log(playersData); // For debugging
     } catch (error) {
@@ -412,7 +412,8 @@ function checkMessage(msg, userID) {
 }
 
 function updateGuesserInfo(userID, type) {
-    const player = playersData.find(player => player.id === userID);
+    const normalizedId = Number(userID);
+    const player = playersData.find(player => Number(player.id) === normalizedId);
     if (player) {
         document.getElementById(type + "-guessed-by").textContent = `${player.username}`;
         document.getElementById(type + "-guessed-by-circle").style.boxShadow = `0 0 30px ${accentColorString}`;

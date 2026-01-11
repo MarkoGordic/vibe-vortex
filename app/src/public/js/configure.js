@@ -2,11 +2,22 @@ const socket = io();
 
 let currentTab = 0;
 showTab(currentTab);
+let playlistsLoaded = false;
+let devicesLoaded = false;
 
 function showTab(n) {
     let tabs = document.getElementsByClassName("tab");
     tabs[n].style.display = "block";
     fixStepIndicator(n);
+
+    if (n === 2 && !playlistsLoaded) {
+        loadAndDisplayPlaylistsForCurrentUser();
+        playlistsLoaded = true;
+    }
+    if (n === 3 && !devicesLoaded) {
+        loadAndDisplayDevices();
+        devicesLoaded = true;
+    }
 }
 
 function navigateTabs(n) {
@@ -197,7 +208,7 @@ function updateTrackCount(playlistItem, checkbox) {
     updateTrackRange();
 }
 
-loadAndDisplayPlaylistsForCurrentUser();
+// Lazy-load playlists when the user reaches the playlists tab.
 
 function loadAndDisplayDevices() {
     fetch('/spotify/devices')
@@ -284,7 +295,7 @@ function handleDeviceSelectionChange(selectedDeviceId) {
     console.log("Selected Device ID:", selectedDeviceId);
 }
 
-loadAndDisplayDevices();
+// Lazy-load devices when the user reaches the devices tab.
 
 function deactivateRoom() {
     fetch('/vortex/deactivate_room', {
