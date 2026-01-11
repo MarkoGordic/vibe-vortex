@@ -71,6 +71,19 @@ body {
     animation: floatUp 0.8s ease;
     animation-fill-mode: both;
     border: 1px solid rgba(255, 255, 255, 0.08);
+    position: relative;
+    overflow: hidden;
+}
+
+.card::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, rgba(29, 185, 84, 0.9), transparent);
+    opacity: 0.6;
 }
 
 #host {
@@ -124,6 +137,7 @@ body {
 .card p {
     font-size: 0.95em;
     color: var(--muted);
+    line-height: 1.5;
 }
 
 input {
@@ -140,11 +154,16 @@ input {
     letter-spacing: 0.5ch;
     color: var(--text);
     transition: color 0.3s ease;
+    text-transform: uppercase;
 }
 
 input:focus {
     outline: none;
     color: var(--accent);
+}
+
+input::placeholder {
+    color: rgba(255, 255, 255, 0.35);
 }
 
 @keyframes floatUp {

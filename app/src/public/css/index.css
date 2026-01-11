@@ -381,11 +381,14 @@ body.modal-open {
     margin-bottom: 16px;
 }
 
-#crop-canvas {
+#crop-image {
+    width: 100%;
+    max-width: 360px;
+    max-height: 360px;
     border-radius: 14px;
     background-color: #101010;
     border: 2px solid rgba(29, 185, 84, 0.35);
-    touch-action: none;
+    display: block;
 }
 
 .crop-controls {

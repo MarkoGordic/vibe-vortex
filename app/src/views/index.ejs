@@ -10,6 +10,7 @@
     <title>Vibe Vortex</title>
 
     <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="https://unpkg.com/cropperjs@1.6.2/dist/cropper.min.css">
 </head>
 <body>
     <div class="left-container"></div>
@@ -104,15 +105,12 @@
         </div>
     </div>
 
-    <script src="/js/login.js"></script>
-    <script src="https://kit.fontawesome.com/e9dddd0b9b.js" crossorigin="anonymous"></script>
-
     <div class="crop-modal" id="crop-modal" aria-hidden="true">
         <div class="crop-modal-content" role="dialog" aria-modal="true" aria-labelledby="crop-title">
             <h2 id="crop-title">Crop your photo</h2>
             <p>Drag to position. Use the slider to zoom.</p>
             <div class="crop-canvas-wrap">
-                <canvas id="crop-canvas" width="320" height="320"></canvas>
+                <img id="crop-image" alt="Crop preview">
             </div>
             <div class="crop-controls">
                 <label for="crop-zoom">Zoom</label>
@@ -124,5 +122,9 @@
             </div>
         </div>
     </div>
+
+    <script src="https://unpkg.com/cropperjs@1.6.2/dist/cropper.min.js"></script>
+    <script src="/js/login.js"></script>
+    <script src="https://kit.fontawesome.com/e9dddd0b9b.js" crossorigin="anonymous"></script>
 </body>
 </html>
