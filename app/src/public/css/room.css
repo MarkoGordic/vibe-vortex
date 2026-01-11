@@ -305,6 +305,12 @@ button:hover {
 
     .input-group {
         width: 100%;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    #guess-input {
+        border-radius: 8px;
     }
 
     .host-button {
@@ -314,6 +320,20 @@ button:hover {
 
     #exit-game {
         margin-top: 40px;
+    }
+
+    #send-guess {
+        border-radius: 8px;
+        width: 100%;
+    }
+
+    .guess-info {
+        justify-content: center;
+        text-align: center;
+    }
+
+    .last-guess {
+        text-align: center;
     }
 }
 
