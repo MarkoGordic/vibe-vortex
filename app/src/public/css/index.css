@@ -32,9 +32,6 @@ body {
     overflow-y: auto;
 }
 
-body.modal-open {
-    overflow: hidden;
-}
 
 .left-container {
     width: 70%;
@@ -275,26 +272,6 @@ body.modal-open {
     margin: 20px 0;
 }
 
-.avatar-preview {
-    display: none;
-    margin-top: 12px;
-    align-items: center;
-    gap: 12px;
-    color: var(--muted);
-    font-size: 0.85rem;
-}
-
-.avatar-preview img {
-    width: 64px;
-    height: 64px;
-    border-radius: 12px;
-    object-fit: cover;
-    border: 2px solid rgba(29, 185, 84, 0.4);
-}
-
-.avatar-preview.is-visible {
-    display: flex;
-}
 
 .file-upload-label {
     display: block;
@@ -338,101 +315,6 @@ body.modal-open {
     }
 }
 
-.crop-modal {
-    position: fixed;
-    inset: 0;
-    background: rgba(10, 10, 10, 0.75);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    padding: 20px;
-}
-
-.crop-modal.is-visible {
-    display: flex;
-}
-
-.crop-modal-content {
-    width: 420px;
-    max-width: 94vw;
-    background: rgba(18, 18, 18, 0.95);
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    text-align: center;
-}
-
-.crop-modal-content h2 {
-    margin-bottom: 6px;
-}
-
-.crop-modal-content p {
-    color: var(--muted);
-    font-size: 0.9rem;
-    margin-bottom: 16px;
-}
-
-.crop-canvas-wrap {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 16px;
-}
-
-#crop-image {
-    width: 100%;
-    max-width: 360px;
-    max-height: 360px;
-    border-radius: 14px;
-    background-color: #101010;
-    border: 2px solid rgba(29, 185, 84, 0.35);
-    display: block;
-}
-
-.crop-controls {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    justify-content: center;
-    color: var(--muted);
-    margin-bottom: 16px;
-}
-
-.crop-controls input[type="range"] {
-    width: 220px;
-}
-
-.crop-actions {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-}
-
-.crop-actions button.secondary {
-    background-color: #2d2d2d;
-    color: var(--text);
-}
-
-@media screen and (max-width: 600px) {
-    .crop-modal-content {
-        width: 100%;
-        padding: 20px;
-    }
-
-    .crop-actions {
-        flex-direction: column;
-    }
-
-    .crop-controls {
-        flex-direction: column;
-    }
-
-    .crop-controls input[type="range"] {
-        width: 100%;
-    }
-}
 
 @media screen and (max-width: 1400px) {
     .left-container {

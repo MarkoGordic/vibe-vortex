@@ -73,6 +73,10 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.08);
     position: relative;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
 }
 
 .card::after {
@@ -144,7 +148,7 @@ input {
     display: block;
     margin-top: 10px;
     margin-bottom: 10px;
-    margin-left: 16px;
+    margin-left: 0;
     border: none;
     padding: 0;
     width: 10.5ch;
@@ -155,6 +159,10 @@ input {
     color: var(--text);
     transition: color 0.3s ease;
     text-transform: uppercase;
+}
+
+.card input {
+    align-self: center;
 }
 
 input:focus {
