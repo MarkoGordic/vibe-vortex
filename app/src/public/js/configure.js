@@ -318,7 +318,10 @@ function deactivateRoom() {
 }
 
 function collectAndSendPreferences() {
-    const gameType = document.querySelector('.half.selected')?.id || 'guessing';
+    let gameType = document.querySelector('.half.selected')?.id || 'guessing';
+    if (gameType === 'continue-lyrics') {
+        gameType = 'lyrics';
+    }
     const selectedPlaylists = [];
     document.querySelectorAll('.playlist-checkbox:checked').forEach(checkbox => {
         const playlistId = checkbox.closest('.playlist-item').dataset.playlistId;

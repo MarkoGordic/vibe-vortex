@@ -156,3 +156,255 @@ document.addEventListener('DOMContentLoaded', function ()   {
         spotify.classList.add('active-form');
     }
 });
+
+document.addEventListener('DOMContentLoaded', function () {
+    const fileInput = document.getElementById('profile-picture');
+    const signUpForm = document.querySelector('#register-container form');
+    const signUpAlertMsg = document.querySelector('.register-container .alert-msg');
+    const preview = document.getElementById('avatar-preview');
+    const previewImg = document.getElementById('avatar-preview-img');
+
+    const cropModal = document.getElementById('crop-modal');
+    const cropCanvas = document.getElementById('crop-canvas');
+    const cropZoom = document.getElementById('crop-zoom');
+    const cropApply = document.getElementById('crop-apply');
+    const cropCancel = document.getElementById('crop-cancel');
+
+    if (!fileInput || !signUpForm || !signUpAlertMsg || !preview || !previewImg || !cropModal || !cropCanvas || !cropZoom || !cropApply || !cropCancel) {
+        return;
+    }
+
+    const ctx = cropCanvas.getContext('2d');
+    const OUTPUT_SIZE = 512;
+    let cropImage = null;
+    let isCropped = false;
+    let offsetX = 0;
+    let offsetY = 0;
+    let scale = 1;
+    let minScale = 1;
+    let dragging = false;
+    let lastX = 0;
+    let lastY = 0;
+    let activeObjectUrl = null;
+    let activePreviewUrl = null;
+
+    function setPreview(url) {
+        if (activePreviewUrl) {
+            URL.revokeObjectURL(activePreviewUrl);
+        }
+        activePreviewUrl = url;
+        previewImg.src = url;
+        preview.classList.add('is-visible');
+    }
+
+    function clearPreview() {
+        if (activePreviewUrl) {
+            URL.revokeObjectURL(activePreviewUrl);
+            activePreviewUrl = null;
+        }
+        previewImg.removeAttribute('src');
+        preview.classList.remove('is-visible');
+    }
+
+    function showModal() {
+        cropModal.classList.add('is-visible');
+        document.body.classList.add('modal-open');
+        cropModal.setAttribute('aria-hidden', 'false');
+    }
+
+    function hideModal() {
+        cropModal.classList.remove('is-visible');
+        document.body.classList.remove('modal-open');
+        cropModal.setAttribute('aria-hidden', 'true');
+    }
+
+    function clampOffsets() {
+        const canvasSize = cropCanvas.width;
+        const imgWidth = cropImage.width * scale;
+        const imgHeight = cropImage.height * scale;
+        const minX = canvasSize - imgWidth;
+        const minY = canvasSize - imgHeight;
+
+        offsetX = Math.min(0, Math.max(minX, offsetX));
+        offsetY = Math.min(0, Math.max(minY, offsetY));
+    }
+
+    function drawCrop() {
+        if (!cropImage) {
+            return;
+        }
+        const canvasSize = cropCanvas.width;
+        ctx.clearRect(0, 0, canvasSize, canvasSize);
+        ctx.drawImage(
+            cropImage,
+            offsetX,
+            offsetY,
+            cropImage.width * scale,
+            cropImage.height * scale
+        );
+    }
+
+    function resizeCropCanvas() {
+        if (!cropImage) {
+            return;
+        }
+        const maxSize = Math.min(window.innerWidth - 48, window.innerHeight - 280);
+        const canvasSize = Math.max(220, Math.min(360, maxSize));
+        cropCanvas.width = canvasSize;
+        cropCanvas.height = canvasSize;
+
+        minScale = Math.max(canvasSize / cropImage.width, canvasSize / cropImage.height);
+        scale = minScale * Number(cropZoom.value || 1);
+
+        offsetX = (canvasSize - cropImage.width * scale) / 2;
+        offsetY = (canvasSize - cropImage.height * scale) / 2;
+        clampOffsets();
+        drawCrop();
+    }
+
+    function openCropper(file) {
+        if (activeObjectUrl) {
+            URL.revokeObjectURL(activeObjectUrl);
+        }
+        activeObjectUrl = URL.createObjectURL(file);
+        const img = new Image();
+        img.onload = function () {
+            cropImage = img;
+            cropZoom.value = 1;
+            resizeCropCanvas();
+            showModal();
+            if (activeObjectUrl) {
+                URL.revokeObjectURL(activeObjectUrl);
+                activeObjectUrl = null;
+            }
+        };
+        img.src = activeObjectUrl;
+    }
+
+    fileInput.addEventListener('change', function () {
+        const file = fileInput.files && fileInput.files[0];
+        isCropped = false;
+        if (!file) {
+            clearPreview();
+            return;
+        }
+        if (!file.type.startsWith('image/')) {
+            signUpAlertMsg.textContent = 'Please select an image file.';
+            fileInput.value = '';
+            clearPreview();
+            return;
+        }
+        openCropper(file);
+    });
+
+    cropZoom.addEventListener('input', function () {
+        if (!cropImage) {
+            return;
+        }
+        const canvasSize = cropCanvas.width;
+        const prevScale = scale;
+        const centerX = (canvasSize / 2 - offsetX) / prevScale;
+        const centerY = (canvasSize / 2 - offsetY) / prevScale;
+
+        scale = minScale * Number(cropZoom.value);
+        offsetX = canvasSize / 2 - centerX * scale;
+        offsetY = canvasSize / 2 - centerY * scale;
+        clampOffsets();
+        drawCrop();
+    });
+
+    cropCanvas.addEventListener('pointerdown', function (event) {
+        if (!cropImage) {
+            return;
+        }
+        dragging = true;
+        lastX = event.clientX;
+        lastY = event.clientY;
+        cropCanvas.setPointerCapture(event.pointerId);
+    });
+
+    cropCanvas.addEventListener('pointermove', function (event) {
+        if (!dragging || !cropImage) {
+            return;
+        }
+        offsetX += event.clientX - lastX;
+        offsetY += event.clientY - lastY;
+        lastX = event.clientX;
+        lastY = event.clientY;
+        clampOffsets();
+        drawCrop();
+    });
+
+    function stopDrag(event) {
+        if (!dragging) {
+            return;
+        }
+        dragging = false;
+        if (event && event.pointerId !== undefined) {
+            cropCanvas.releasePointerCapture(event.pointerId);
+        }
+    }
+
+    cropCanvas.addEventListener('pointerup', stopDrag);
+    cropCanvas.addEventListener('pointercancel', stopDrag);
+    cropCanvas.addEventListener('pointerleave', stopDrag);
+
+    cropCancel.addEventListener('click', function () {
+        hideModal();
+        fileInput.value = '';
+        isCropped = false;
+        cropImage = null;
+        clearPreview();
+    });
+
+    cropApply.addEventListener('click', function () {
+        if (!cropImage) {
+            hideModal();
+            return;
+        }
+        const canvasSize = cropCanvas.width;
+        const outputCanvas = document.createElement('canvas');
+        outputCanvas.width = OUTPUT_SIZE;
+        outputCanvas.height = OUTPUT_SIZE;
+        const outCtx = outputCanvas.getContext('2d');
+        const scaleFactor = OUTPUT_SIZE / canvasSize;
+
+        outCtx.drawImage(
+            cropImage,
+            offsetX * scaleFactor,
+            offsetY * scaleFactor,
+            cropImage.width * scale * scaleFactor,
+            cropImage.height * scale * scaleFactor
+        );
+
+        outputCanvas.toBlob((blob) => {
+            if (!blob) {
+                return;
+            }
+            const croppedFile = new File([blob], `profile_${Date.now()}.jpg`, { type: 'image/jpeg' });
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(croppedFile);
+            fileInput.files = dataTransfer.files;
+            isCropped = true;
+            setPreview(URL.createObjectURL(blob));
+            hideModal();
+        }, 'image/jpeg', 0.92);
+    });
+
+    signUpForm.addEventListener('submit', function (event) {
+        if (event.defaultPrevented) {
+            return;
+        }
+        if (fileInput.files.length > 0 && !isCropped) {
+            event.preventDefault();
+            signUpAlertMsg.textContent = 'Please crop your profile photo.';
+            openCropper(fileInput.files[0]);
+        }
+    });
+
+    window.addEventListener('resize', function () {
+        if (cropModal.classList.contains('is-visible')) {
+            resizeCropCanvas();
+        }
+    });
+});

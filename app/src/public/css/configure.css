@@ -51,6 +51,20 @@ body {
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
     padding: 20px;
     text-align: center;
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.tab-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 16px;
+    right: 16px;
+    height: 3px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, transparent, rgba(29, 185, 84, 0.8), transparent);
+    opacity: 0.8;
 }
 
 .tab {
@@ -257,6 +271,7 @@ input[type="checkbox"]:checked::before {
     display: inline-block;
     margin: 0 5px;
     transition: background-color 0.3s;
+    box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.2);
 }
 
 .tab-indicator.completed {
@@ -276,6 +291,7 @@ button {
     padding: 10px 20px;
     cursor: pointer;
     transition: background-color 0.2s, transform 0.3s ease;
+    letter-spacing: 0.04em;
 }
 
 button:hover {
@@ -577,5 +593,20 @@ input[type="range"]:hover::-moz-range-thumb {
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
         scroll-behavior: auto !important;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    .tab-container {
+        width: 720px;
+        padding: 28px;
+    }
+
+    .settings {
+        height: 280px;
+    }
+
+    .half p {
+        font-size: 1.7em;
     }
 }

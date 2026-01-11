@@ -101,6 +101,16 @@ body {
     background-size: cover;
 }
 
+.podium::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 15% 20%, rgba(29, 185, 84, 0.18), transparent 45%),
+        radial-gradient(circle at 80% 10%, rgba(255, 255, 255, 0.12), transparent 35%),
+        linear-gradient(180deg, rgba(0, 0, 0, 0.25), transparent 45%, rgba(0, 0, 0, 0.3));
+    pointer-events: none;
+}
+
 .podium-guessed-by {
     width: 100%;
     min-height: 100vh;
@@ -132,7 +142,8 @@ body {
     flex-direction: column;
     min-height: 100vh;
     min-height: 100dvh;
-    transition: opacity 0.5s ease-in-out;
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease;
+    transform: translateY(0);
 }
 
 .track-image {
@@ -155,6 +166,7 @@ body {
 .track-name {
     font-size: 35px;
     color: var(--text);
+    text-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
 }
 
 .track-author {
@@ -280,6 +292,18 @@ body {
     box-shadow: 0 0 35px rgba(255, 255, 255, 1);
     background-color: #212121;
     border-radius: 20px;
+    animation: alertPop 0.4s ease;
+}
+
+@keyframes alertPop {
+    0% {
+        transform: translateY(8px) scale(0.98);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
 }
 
 .alert-image {
@@ -324,7 +348,9 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: opacity 1s ease-in-out;
+    transition: opacity 0.6s ease, transform 0.6s ease;
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
 }
 
 .podium-final-leaderboard-wrap {
@@ -334,6 +360,92 @@ body {
     flex-direction: row;
     min-height: 100vh;
     min-height: 100dvh;
+}
+
+.podium-final-leaderboard.is-visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.leaderboard-final-place {
+    opacity: 0;
+    transform: translateY(10px) scale(0.96);
+    animation: finalPlaceIn 0.5s ease forwards;
+}
+
+.leaderboard-final-place.winner img {
+    box-shadow: 0 0 55px rgba(255, 215, 0, 0.75);
+}
+
+.leaderboard-final-place.winner .final-name {
+    color: #ffd36a;
+}
+
+@keyframes finalPlaceIn {
+    0% {
+        opacity: 0;
+        transform: translateY(10px) scale(0.96);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.winner-banner {
+    position: absolute;
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    z-index: 2;
+}
+
+.winner-banner.is-visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+    animation: bannerGlow 2.2s ease-in-out infinite;
+}
+
+.winner-banner-content {
+    background: rgba(0, 0, 0, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 14px 28px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(8px);
+}
+
+.winner-title {
+    font-size: 0.9rem;
+    letter-spacing: 0.2em;
+    color: #b8ffdc;
+    text-transform: uppercase;
+}
+
+.winner-name {
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.winner-points {
+    font-size: 1rem;
+    color: var(--muted);
+}
+
+@keyframes bannerGlow {
+    0%,
+    100% {
+        box-shadow: 0 0 0 rgba(255, 215, 0, 0);
+    }
+    50% {
+        box-shadow: 0 0 35px rgba(255, 215, 0, 0.45);
+    }
 }
 
 .leaderboard-final-place img {
@@ -423,6 +535,25 @@ body {
 
     .leaderboard-wrap {
         max-width: 250px;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    .track-image {
+        width: 260px;
+        height: 260px;
+    }
+
+    .track-name {
+        font-size: 42px;
+    }
+
+    .track-author {
+        font-size: 32px;
+    }
+
+    .winner-banner-content {
+        padding: 18px 36px;
     }
 }
 

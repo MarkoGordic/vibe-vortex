@@ -124,6 +124,7 @@ async function fetchAndSetGameTypeImage() {
                     imageUrl = '/img/guessing.png';
                     break;
                 case 'lyrics':
+                case 'continue-lyrics':
                     imageUrl = '/img/lyrics.png';
                     break;
             }

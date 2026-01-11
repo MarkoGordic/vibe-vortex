@@ -85,7 +85,7 @@ async function initializePlayersData(roomCode) {
 }
 
 function sortPlayersByPoints() {
-    playersData.sort((a, b) => b.points - a.points);
+    playersData.sort((a, b) => Number(b.points) - Number(a.points));
 }
 
 function populateLeaderboard() {
@@ -474,6 +474,16 @@ function processAlertQueue() {
 function populateFinalLeaderboard() {
     sortPlayersByPoints();
 
+    const placeIds = ['place1-final', 'place2-final', 'place3-final', 'place4-final', 'place5-final'];
+    placeIds.forEach((placeId) => {
+        const place = document.getElementById(placeId);
+        if (place) {
+            place.innerHTML = '';
+            place.classList.remove('winner');
+            place.style.animationDelay = '0ms';
+        }
+    });
+
     const topPlayers = playersData.slice(0, Math.min(5, playersData.length));
 
     topPlayers.forEach((player, index) => {
@@ -494,22 +504,61 @@ function populateFinalLeaderboard() {
                         <p class="final-points">${player.points} pts</p>
                     </div>
                 </div>`;
+            leaderboardPlace.classList.toggle('winner', index === 0);
+            leaderboardPlace.style.animationDelay = `${index * 120}ms`;
         }
     });
+
+    return topPlayers;
+}
+
+function showWinnerBanner(topPlayers) {
+    if (!topPlayers || topPlayers.length === 0) {
+        return;
+    }
+
+    const topScore = Number(topPlayers[0].points);
+    const winners = playersData.filter(player => Number(player.points) === topScore);
+    const winnerNames = winners.map(player => player.username);
+    const bannerTitle = winnerNames.length > 1 ? `TIE WINNERS` : `VIBE CHAMPION`;
+
+    const banner = document.getElementById('winner-banner');
+    const name = document.getElementById('winner-name');
+    const points = document.getElementById('winner-points');
+    const title = document.querySelector('.winner-title');
+
+    if (name) {
+        name.textContent = winnerNames.join(' & ');
+    }
+    if (points) {
+        points.textContent = `${topScore} pts`;
+    }
+    if (title) {
+        title.textContent = bannerTitle;
+    }
+
+    if (banner) {
+        banner.classList.add('is-visible');
+    }
 }
 
 function endGame() {
     document.getElementById('podium-guessed-by').style.opacity = '0';
     document.getElementById('podium-display-wrap').style.opacity = '0';
-    populateFinalLeaderboard();
+    const topPlayers = populateFinalLeaderboard();
 
     setTimeout(() => {
-        document.getElementById('podium-final-leaderboard').style.opacity = '1';
+        const finalBoard = document.getElementById('podium-final-leaderboard');
+        if (finalBoard) {
+            finalBoard.classList.add('is-visible');
+        }
+        showWinnerBanner(topPlayers);
     }, 1000);
 }
 
 function alertPositiveBonus(playerID, pts){
-    const player = playersData.find(player => player.id === playerID);
+    const normalizedId = Number(playerID);
+    const player = playersData.find(player => Number(player.id) === normalizedId);
     if(player !== undefined){
         player.points += pts;
         let profileImagePath = player.profile_image ? player.profile_image.replace(/\\/g, '/') : '/img/player.png';
@@ -522,7 +571,8 @@ function alertPositiveBonus(playerID, pts){
 }
 
 function alertNegativeBonus(playerID, pts){
-    const player = playersData.find(player => player.id === playerID);
+    const normalizedId = Number(playerID);
+    const player = playersData.find(player => Number(player.id) === normalizedId);
     if(player !== undefined){
         player.points -= pts;
         let profileImagePath = player.profile_image ? player.profile_image.replace(/\\/g, '/') : '/img/player.png';
@@ -535,7 +585,7 @@ function alertNegativeBonus(playerID, pts){
 }
 
 function bonusPoints(trackURI, artistURI, albumURI){
-    const example = playersData.find(player => player.id === 1);
+    const example = playersData.find(player => Number(player.id) === 1);
 
     if(trackURI === "spotify:track:0BxE4FqsDD1Ot4YuBXwAPp"){
         if (example) {

@@ -49,6 +49,10 @@
                 <div class="file-upload-container">
                     <label for="profile-picture" class="file-upload-label">Profile Picture</label>
                     <input type="file" id="profile-picture" name="profilePicture" accept="image/*" class="file-upload-input">
+                    <div class="avatar-preview" id="avatar-preview">
+                        <img id="avatar-preview-img" alt="Profile preview">
+                        <span>Square crop required</span>
+                    </div>
                 </div>
 
                 <div class="password-group">
@@ -102,5 +106,23 @@
 
     <script src="/js/login.js"></script>
     <script src="https://kit.fontawesome.com/e9dddd0b9b.js" crossorigin="anonymous"></script>
+
+    <div class="crop-modal" id="crop-modal" aria-hidden="true">
+        <div class="crop-modal-content" role="dialog" aria-modal="true" aria-labelledby="crop-title">
+            <h2 id="crop-title">Crop your photo</h2>
+            <p>Drag to position. Use the slider to zoom.</p>
+            <div class="crop-canvas-wrap">
+                <canvas id="crop-canvas" width="320" height="320"></canvas>
+            </div>
+            <div class="crop-controls">
+                <label for="crop-zoom">Zoom</label>
+                <input type="range" id="crop-zoom" min="1" max="3" step="0.01" value="1">
+            </div>
+            <div class="crop-actions">
+                <button type="button" id="crop-cancel" class="secondary">Cancel</button>
+                <button type="button" id="crop-apply">Use crop</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

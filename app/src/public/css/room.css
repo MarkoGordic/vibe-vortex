@@ -173,6 +173,7 @@ body {
     padding: 20px;
     height: 100dvh;
     animation: floatIn 0.6s ease;
+    text-align: center;
 }
 
 .guess-info {
@@ -223,6 +224,7 @@ body {
     transition: background-color 0.3s, transform 0.3s;
     border-top-right-radius: 6px;
     border-bottom-right-radius: 6px;
+    letter-spacing: 0.04em;
 }
 
 #send-guess:hover {
@@ -269,6 +271,7 @@ button {
     padding: 10px 20px;
     cursor: pointer;
     transition: background-color 0.2s;
+    letter-spacing: 0.04em;
 }
 
 button:hover {
@@ -311,6 +314,24 @@ button:hover {
 
     #exit-game {
         margin-top: 40px;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    .guess-section {
+        padding: 40px;
+    }
+
+    .room-code {
+        font-size: 28px;
+    }
+
+    .input-group {
+        max-width: 520px;
+    }
+
+    #guess-input {
+        font-size: 1.05rem;
     }
 }
 
