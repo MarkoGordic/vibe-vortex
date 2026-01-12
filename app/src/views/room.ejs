@@ -12,65 +12,194 @@
     <link rel="stylesheet" href="/css/room.css">
 </head>
 <body>
+    <!-- Loader Screen (Player waiting for host) -->
     <div class="loader-player" id="loader-content" <% if (host === true) { %> style="display: none" <% } %>>
         <div class="loader-content">
+            <div class="loader-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 18V5l12-2v13"></path>
+                    <circle cx="6" cy="18" r="3"></circle>
+                    <circle cx="18" cy="16" r="3"></circle>
+                </svg>
+            </div>
             <p class="loader-disclaimer">WAITING FOR HOST TO START THE VIBE</p>
-            <p style="color: #8c8c8c;margin-bottom: 30px;">please be patient</p>
+            <p class="loader-subtext">please be patient</p>
             <div class="loader"></div>
-
             <p class="did-you-know-fact">Did you know?</p>
-
-            <button onclick="window.location.href='/vortex/room/leave'">LEAVE ROOM</button>
+            <button class="btn-danger" onclick="window.location.href='/vortex/room/leave'">LEAVE ROOM</button>
         </div>
     </div>
 
+    <!-- Host Role Selection -->
     <% if (host === true) { %>
-        <div class="host-selection" id="host-selection">
-            <div class="host-selection-content">
-                <p class="host-disclaimer">CHOOSE ROLE OF THIS DEVICE</p>
-                <div style="display: inline-flex;">
-                    <div class="host-button" onclick="window.location.href='/vortex/podium'" id="podium">
-                        <span style="font-weight: bold">GAME DISPLAY</span>
-                    </div>
-                    <div class="host-button" id="player" onclick="switchToPlayerMode()">
-                        <span style="font-weight: bold">PLAYER</span>
-                    </div>
+    <div class="host-selection" id="host-selection">
+        <div class="host-selection-content">
+            <p class="host-disclaimer">CHOOSE ROLE OF THIS DEVICE</p>
+            <div class="host-buttons">
+                <div class="host-button" onclick="window.location.href='/vortex/podium'" id="podium">
+                    <span class="host-button-label">GAME DISPLAY</span>
+                </div>
+                <div class="host-button" id="player" onclick="switchToPlayerMode()">
+                    <span class="host-button-label">PLAYER</span>
                 </div>
             </div>
         </div>
+    </div>
     <% } %>
 
+    <!-- Player Controls (Main Game Screen) -->
     <div class="player-controls" id="player-controls" style="display: none">
-        <div class="controls-content">
-            <div class="guess-section">
-                <img class="game-type-image" id="game-type-image">
-                <h1 class="room-code" id="room-code" style="margin-bottom: 20px"></h1>
+        <!-- Decorative Background Glows -->
+        <div class="bg-glow glow-1"></div>
+        <div class="bg-glow glow-2"></div>
 
-                <div class="guess-info">
-                    <i class="fas fa-user"></i><span id="artist-guessed-by">: <em>N/A</em></span>
+        <!-- Top Section - Info Zone -->
+        <section class="info-zone">
+            <div class="info-content">
+                <!-- Header: Room Code & Status -->
+                <div class="header-row">
+                    <div class="room-badge">
+                        <svg class="badge-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="4" y1="9" x2="20" y2="9"></line>
+                            <line x1="4" y1="15" x2="20" y2="15"></line>
+                            <line x1="10" y1="3" x2="8" y2="21"></line>
+                            <line x1="16" y1="3" x2="14" y2="21"></line>
+                        </svg>
+                        <span class="room-code" id="room-code"></span>
+                    </div>
+                    <div class="live-badge">
+                        <svg class="live-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"></path>
+                            <path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"></path>
+                            <circle cx="12" cy="12" r="2"></circle>
+                            <path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"></path>
+                            <path d="M19.1 4.9C23 8.8 23 15.1 19.1 19"></path>
+                        </svg>
+                        <span>Live</span>
+                    </div>
                 </div>
-                <div class="guess-info">
-                    <i class="fas fa-music"></i><span id="track-guessed-by">: <em>N/A</em></span>
-                </div>
-                <div class="input-group">
-                    <input type="text" id="guess-input" placeholder="Enter your guess...">
-                    <button id="send-guess" onclick="sendGuess()">Send</button>
-                </div>
-                <p class="last-guess" id="last-guess">Last Guess: </p>
-                <% if (host !== true) { %>
-                    <button id="exit-game" onclick="window.location.href='/vortex/room/leave'">Exit Game</button>
-                <% } %>
 
-                <% if (host === true) { %>
-                    <button onclick="socket.emit('host_command', 'next_round')">NEXT ROUND</button>
-                    <button id="exit-game" onclick="socket.emit('host_command', 'end_game');deactivateRoom()">End Game</button>
-                <% } %>
+                <!-- Track Info Centerpiece -->
+                <div class="track-centerpiece">
+                    <!-- Album Art / Icon -->
+                    <div class="album-art-wrapper">
+                        <div class="album-art" id="album-art">
+                            <svg class="music-icon" id="music-icon" xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M9 18V5l12-2v13"></path>
+                                <circle cx="6" cy="18" r="3"></circle>
+                                <circle cx="18" cy="16" r="3"></circle>
+                            </svg>
+                            <img class="album-cover" id="album-cover" src="" alt="Album Cover" style="display: none;">
+                        </div>
+                        <div class="album-glow" id="album-glow"></div>
+                    </div>
+
+                    <!-- Track & Artist Names -->
+                    <div class="track-info">
+                        <h2 class="track-name" id="track-name">Unknown Track</h2>
+                        <h2 class="artist-name" id="artist-name">Unknown Artist</h2>
+                    </div>
+
+                    <!-- Guessed By Block -->
+                    <div class="guessed-container">
+                        <!-- Song Guesser -->
+                        <div class="guess-slot" id="song-guess-slot">
+                            <div class="guess-badge guess-badge-song" id="song-badge" style="display: none;">
+                                <svg class="guess-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                </svg>
+                                <span class="guess-text">Song guessed by: <strong id="track-guessed-by"></strong></span>
+                            </div>
+                            <span class="guess-placeholder" id="song-placeholder">Guess the song title...</span>
+                        </div>
+
+                        <!-- Artist Guesser -->
+                        <div class="guess-slot" id="artist-guess-slot">
+                            <div class="guess-badge guess-badge-artist" id="artist-badge" style="display: none;">
+                                <svg class="guess-icon trophy-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                                    <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                                    <path d="M4 22h16"></path>
+                                    <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
+                                    <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
+                                    <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+                                </svg>
+                                <span class="guess-text">Artist guessed by: <strong id="artist-guessed-by"></strong></span>
+                            </div>
+                            <span class="guess-placeholder" id="artist-placeholder">Guess the artist...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Divider -->
+        <div class="section-divider">
+            <div class="divider-accent"></div>
+        </div>
+
+        <!-- Bottom Section - Input Zone -->
+        <section class="input-zone">
+            <div class="input-content">
+                <!-- Last Sent Display -->
+                <div class="last-guess-container">
+                    <div class="last-guess-wrapper" id="last-guess-wrapper" style="display: none;">
+                        <span class="last-guess-label">You last guessed:</span>
+                        <div class="last-guess-box">
+                            <span class="last-guess" id="last-guess"></span>
+                            <div class="guess-indicator"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Input Area -->
+                <div class="input-area">
+                    <input type="text" id="guess-input" placeholder="Type song or artist..." autocomplete="off">
+                    <button class="btn-send" id="send-guess" onclick="sendGuess()">
+                        <span>SEND</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <% if (host !== true) { %>
+                    <button class="btn-exit" id="exit-game" onclick="window.location.href='/vortex/room/leave'">Exit Game</button>
+                    <% } %>
+
+                    <% if (host === true) { %>
+                    <button class="btn-next" onclick="socket.emit('host_command', 'next_round')">NEXT ROUND</button>
+                    <button class="btn-exit" id="exit-game" onclick="showEndGameConfirm()">End Game</button>
+                    <% } %>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- End Game Confirmation Modal -->
+    <div class="modal-overlay" id="end-game-modal" style="display: none;">
+        <div class="modal-box">
+            <div class="modal-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+            </div>
+            <h3 class="modal-title">End Game?</h3>
+            <p class="modal-text">Are you sure you want to end the game? This will end the session for all players.</p>
+            <div class="modal-buttons">
+                <button class="btn-modal-cancel" onclick="hideEndGameConfirm()">Cancel</button>
+                <button class="btn-modal-confirm" onclick="confirmEndGame()">End Game</button>
             </div>
         </div>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
-    <script src="https://kit.fontawesome.com/e9dddd0b9b.js" crossorigin="anonymous"></script>
     <script src="/js/room.js"></script>
 </body>
 </html>

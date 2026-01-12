@@ -1,26 +1,120 @@
 const socket = io();
 let started = false;
+let trackGuessed = false;
+let artistGuessed = false;
+let currentTrackName = '';
+let currentArtistName = '';
+let currentAlbumCover = '';
 
 socket.on('server_command', (data) => {
     if(data === "game_ready"){
         let loader = document.getElementById('loader-content');
         loader.parentNode.removeChild(loader);
-        document.getElementById('player-controls').style.display = 'block';
+        document.getElementById('player-controls').style.display = 'flex';
         started = true;
     }
     else if(data === "next_round"){
-        document.getElementById('track-guessed-by').innerHTML = "N/A";
-        document.getElementById('artist-guessed-by').innerHTML = "N/A";
+        // Reset track/artist guessed state
+        trackGuessed = false;
+        artistGuessed = false;
+        currentTrackName = '';
+        currentArtistName = '';
+        currentAlbumCover = '';
+        
+        // Reset song guess
+        document.getElementById('track-guessed-by').innerHTML = "";
+        document.getElementById('song-badge').style.display = 'none';
+        document.getElementById('song-placeholder').style.display = 'block';
+        
+        // Reset artist guess
+        document.getElementById('artist-guessed-by').innerHTML = "";
+        document.getElementById('artist-badge').style.display = 'none';
+        document.getElementById('artist-placeholder').style.display = 'block';
+        
+        // Reset track info
+        document.getElementById('track-name').innerHTML = "Unknown Track";
+        document.getElementById('artist-name').innerHTML = "Unknown Artist";
+        document.getElementById('track-name').classList.remove('revealed');
+        document.getElementById('artist-name').classList.remove('revealed');
+        
+        // Reset album art
+        document.getElementById('music-icon').style.display = 'block';
+        document.getElementById('album-cover').style.display = 'none';
+        document.getElementById('album-cover').src = '';
+        document.getElementById('album-glow').classList.remove('active');
+        
+        // Reset last guess
+        document.getElementById('last-guess-wrapper').style.display = 'none';
+        document.getElementById('last-guess').innerHTML = "";
     }
     else if(data.action === "correct_track"){
+        trackGuessed = true;
         document.getElementById('track-guessed-by').innerHTML = data.username;
+        document.getElementById('song-badge').style.display = 'flex';
+        document.getElementById('song-placeholder').style.display = 'none';
+        
+        // Store and show track name if provided
+        if (data.trackName) {
+            currentTrackName = data.trackName;
+            document.getElementById('track-name').innerHTML = data.trackName;
+            document.getElementById('track-name').classList.add('revealed');
+        }
+        
+        // Store artist name and album cover for later
+        if (data.artistName) currentArtistName = data.artistName;
+        if (data.albumCover) currentAlbumCover = data.albumCover;
+        
+        // Check if both guessed to show album cover
+        checkBothGuessed();
     }
     else if(data.action === "correct_artist"){
+        artistGuessed = true;
         document.getElementById('artist-guessed-by').innerHTML = data.username;
-    }else{
+        document.getElementById('artist-badge').style.display = 'flex';
+        document.getElementById('artist-placeholder').style.display = 'none';
+        
+        // Store and show artist name if provided
+        if (data.artistName) {
+            currentArtistName = data.artistName;
+            document.getElementById('artist-name').innerHTML = data.artistName;
+            document.getElementById('artist-name').classList.add('revealed');
+        }
+        
+        // Store track name and album cover for later
+        if (data.trackName) currentTrackName = data.trackName;
+        if (data.albumCover) currentAlbumCover = data.albumCover;
+        
+        // Check if both guessed to show album cover
+        checkBothGuessed();
+    }
+    else {
         console.log(data);
     }
 });
+
+function checkBothGuessed() {
+    if (trackGuessed && artistGuessed) {
+        // Show album cover if available
+        if (currentAlbumCover) {
+            document.getElementById('music-icon').style.display = 'none';
+            document.getElementById('album-cover').src = currentAlbumCover;
+            document.getElementById('album-cover').style.display = 'block';
+            document.getElementById('album-glow').classList.add('active');
+        }
+        
+        // Ensure track name is shown
+        if (currentTrackName) {
+            document.getElementById('track-name').innerHTML = currentTrackName;
+            document.getElementById('track-name').classList.add('revealed');
+        }
+        
+        // Ensure artist name is shown
+        if (currentArtistName) {
+            document.getElementById('artist-name').innerHTML = currentArtistName;
+            document.getElementById('artist-name').classList.add('revealed');
+        }
+    }
+}
 
 socket.on('host_command', (data) => {
     if (data === "end_game"){
@@ -49,6 +143,33 @@ function deactivateRoom() {
         })
         .catch(error => console.error('Error deactivating room:', error));
 }
+
+// End game confirmation modal functions
+function showEndGameConfirm() {
+    document.getElementById('end-game-modal').style.display = 'flex';
+}
+
+function hideEndGameConfirm() {
+    document.getElementById('end-game-modal').style.display = 'none';
+}
+
+function confirmEndGame() {
+    hideEndGameConfirm();
+    socket.emit('host_command', 'end_game');
+    deactivateRoom();
+}
+
+// Close modal on overlay click
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('end-game-modal');
+    if (modal) {
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                hideEndGameConfirm();
+            }
+        });
+    }
+});
 
 let currentUserID;
 
@@ -110,40 +231,17 @@ function extractRoomCode() {
 }
 
 const roomCode = extractRoomCode();
-document.getElementById('room-code').innerHTML = "ROOM CODE : " + roomCode;
-
-async function fetchAndSetGameTypeImage() {
-    try {
-        const response = await fetch(`/vortex/room/preferences/${roomCode}`);
-        const preferences = await response.json();
-
-        if (preferences && preferences.game_type) {
-            let imageUrl;
-            switch (preferences.game_type) {
-                case 'guessing':
-                    imageUrl = '/img/guessing.png';
-                    break;
-                case 'lyrics':
-                case 'continue-lyrics':
-                    imageUrl = '/img/lyrics.png';
-                    break;
-            }
-            document.getElementById('game-type-image').src = imageUrl;
-        }
-    } catch (error) {
-        console.error('Error fetching game preferences:', error);
-    }
-}
-
-fetchAndSetGameTypeImage();
+document.getElementById('room-code').innerHTML = roomCode;
 
 function sendGuess() {
     const guessInput = document.getElementById('guess-input');
     const lastGuessElement = document.getElementById('last-guess');
+    const lastGuessWrapper = document.getElementById('last-guess-wrapper');
     const guess = guessInput.value.trim();
 
     if (guess) {
-        lastGuessElement.textContent = "Last Guess: " + guess;
+        lastGuessElement.textContent = guess;
+        lastGuessWrapper.style.display = 'flex';
 
         const guessData = {
             guess: guess,

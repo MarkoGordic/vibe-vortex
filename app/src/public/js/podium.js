@@ -451,7 +451,10 @@ function updateGuesserInfo(userID, type) {
 
         let data = {
             action: "correct_" + type,
-            username:player.username
+            username: player.username,
+            trackName: trackName,
+            artistName: trackArtists,
+            albumCover: trackIMG
         }
         player.points += 1;
 
