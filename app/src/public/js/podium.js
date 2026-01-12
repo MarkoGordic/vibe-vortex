@@ -2,6 +2,69 @@ const socket = io();
 let gameReady = false;
 let nextRoundEnabled = true;
 
+// Get room code immediately - needed for socket room join
+const currentRoomCode = document.getElementById('room-code').innerText.split(': ')[1];
+
+// Join socket room for this game
+socket.emit('join_room', {
+    roomCode: currentRoomCode,
+    userId: 'host',
+    username: 'Host',
+    profileImage: null,
+    isHost: true
+});
+
+// Player connection events
+socket.on('player_connected', (data) => {
+    console.log('Player connected:', data);
+    let profileImagePath = data.profileImage ? data.profileImage.replace(/\\/g, '/') : '/img/player.png';
+    if (!profileImagePath.startsWith('/')) {
+        profileImagePath = '/' + profileImagePath;
+    }
+    pushAlert(profileImagePath, `${data.username} joined the game!`, '#1DB954');
+    
+    // Refresh player list for new joiners
+    refreshPlayersList();
+});
+
+socket.on('player_disconnected', (data) => {
+    console.log('Player disconnected:', data);
+    let profileImagePath = data.profileImage ? data.profileImage.replace(/\\/g, '/') : '/img/player.png';
+    if (!profileImagePath.startsWith('/')) {
+        profileImagePath = '/' + profileImagePath;
+    }
+    pushAlert(profileImagePath, `${data.username} left the game`, '#E02500');
+});
+
+async function refreshPlayersList() {
+    // Guard: only run if game is initialized
+    if (!playersData || !gameReady) return;
+    
+    try {
+        const response = await fetch(`/vortex/room/players`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ roomCode: currentRoomCode })
+        });
+        const playerIds = await response.json();
+        
+        // Check for new players not in our list
+        for (const playerId of playerIds) {
+            const existingPlayer = playersData.find(p => Number(p.id) === Number(playerId));
+            if (!existingPlayer) {
+                // Fetch info for new player and add to list
+                const newPlayersInfo = await fetchPlayersInfo([playerId]);
+                if (newPlayersInfo.length > 0) {
+                    playersData.push(newPlayersInfo[0]);
+                    populateLeaderboard();
+                }
+            }
+        }
+    } catch (error) {
+        console.error('Error refreshing players list:', error);
+    }
+}
+
 socket.on('server_command', (data) => {
     if(data === "game_ready"){
         document.getElementById('loader-content').style.opacity = '0';
@@ -30,7 +93,6 @@ socket.on('player_action', (data) => {
     }
 });
 
-const currentRoomCode = document.getElementById('room-code').innerText.split(': ')[1];
 const leaderboard = document.querySelector('.podium-leaderboard');
 let limitedTracks;
 

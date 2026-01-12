@@ -5,6 +5,67 @@ let artistGuessed = false;
 let currentTrackName = '';
 let currentArtistName = '';
 let currentAlbumCover = '';
+let currentUserInfo = null;
+
+// Player connection events
+socket.on('player_connected', (data) => {
+    console.log('Player connected:', data);
+    showPlayerAlert(data.username, data.profileImage, 'joined');
+});
+
+socket.on('player_disconnected', (data) => {
+    console.log('Player disconnected:', data);
+    showPlayerAlert(data.username, data.profileImage, 'left');
+});
+
+socket.on('room_joined', (data) => {
+    console.log('Joined room successfully:', data);
+    
+    // If game already started, show the player controls immediately
+    if (data.gameStarted && !started) {
+        let loader = document.getElementById('loader-content');
+        if (loader) {
+            loader.parentNode.removeChild(loader);
+        }
+        document.getElementById('player-controls').style.display = 'flex';
+        started = true;
+    }
+});
+
+// Alert system for player join/leave
+let playerAlertQueue = [];
+let playerAlertTimeout = null;
+
+function showPlayerAlert(username, profileImage, action) {
+    playerAlertQueue.push({ username, profileImage, action });
+    processPlayerAlertQueue();
+}
+
+function processPlayerAlertQueue() {
+    if (playerAlertQueue.length === 0 || playerAlertTimeout) {
+        return;
+    }
+
+    const { username, profileImage, action } = playerAlertQueue.shift();
+    const alertEl = document.getElementById('player-alert');
+    const alertImg = document.getElementById('player-alert-img');
+    const alertMsg = document.getElementById('player-alert-msg');
+    
+    if (!alertEl) return;
+    
+    const imgPath = profileImage ? (profileImage.startsWith('/') ? profileImage : '/' + profileImage.replace(/\\/g, '/')) : '/img/player.png';
+    alertImg.src = imgPath;
+    alertMsg.textContent = action === 'joined' ? `${username} joined the game!` : `${username} left the game`;
+    alertEl.classList.add('show');
+    alertEl.classList.toggle('join', action === 'joined');
+    alertEl.classList.toggle('leave', action !== 'joined');
+
+    playerAlertTimeout = setTimeout(() => {
+        alertEl.classList.remove('show');
+        playerAlertTimeout = null;
+        setTimeout(() => processPlayerAlertQueue(), 500);
+    }, 3000);
+}
 
 socket.on('server_command', (data) => {
     if(data === "game_ready"){
@@ -180,6 +241,9 @@ async function fetchCurrentUserID() {
             const data = await response.json();
             currentUserID = data.userId;
             console.log('Current User ID:', currentUserID);
+            
+            // Fetch full user info and join socket room
+            await fetchUserInfoAndJoinRoom();
         } else {
             console.error('Failed to fetch user ID');
         }
@@ -188,6 +252,45 @@ async function fetchCurrentUserID() {
     }
 }
 
+async function fetchUserInfoAndJoinRoom() {
+    try {
+        const response = await fetch('/vortex/users', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userIds: [currentUserID] })
+        });
+        
+        if (response.ok) {
+            const usersInfo = await response.json();
+            if (usersInfo && usersInfo.length > 0) {
+                currentUserInfo = usersInfo[0];
+                
+                // Join the socket room with user info
+                socket.emit('join_room', {
+                    roomCode: currentRoomCode,
+                    userId: currentUserID,
+                    username: currentUserInfo.username,
+                    profileImage: currentUserInfo.profile_image,
+                    isHost: false
+                });
+            }
+        }
+    } catch (error) {
+        console.error('Error fetching user info:', error);
+    }
+}
+
+// Extract room code immediately - needed for socket room join
+function extractRoomCode() {
+    const pathArray = window.location.pathname.split('/');
+    const roomCodeIndex = pathArray.findIndex(element => element === "room") + 1;
+    return pathArray[roomCodeIndex];
+}
+
+const roomCode = extractRoomCode();
+const currentRoomCode = roomCode;
+
+// Now fetch user and join room
 fetchCurrentUserID();
 
 const facts = [
@@ -224,13 +327,7 @@ function switchToPlayerMode() {
     loaderContent.style.display = 'block';
 }
 
-function extractRoomCode() {
-    const pathArray = window.location.pathname.split('/');
-    const roomCodeIndex = pathArray.findIndex(element => element === "room") + 1;
-    return pathArray[roomCodeIndex];
-}
-
-const roomCode = extractRoomCode();
+// Update room code display
 document.getElementById('room-code').innerHTML = roomCode;
 
 function sendGuess() {
@@ -262,5 +359,3 @@ document.getElementById('guess-input').addEventListener('keydown', (event) => {
         sendGuess();
     }
 });
-
-const currentRoomCode = roomCode;
