@@ -38,6 +38,7 @@ body {
     background: var(--bg);
     font-family: 'Poppins', sans-serif;
     color: var(--text);
+    padding-bottom: env(safe-area-inset-bottom);
 }
 
 /* ===== LOADER SCREEN ===== */
@@ -799,6 +800,163 @@ body {
 }
 
 /* ===== RESPONSIVE ===== */
+
+/* Desktop & Large Tablets (1024px+) */
+@media screen and (min-width: 1024px) {
+    .info-zone {
+        padding: 32px 48px;
+    }
+    
+    .input-zone {
+        padding: 32px 48px 40px;
+    }
+    
+    .info-content,
+    .input-content {
+        max-width: 560px;
+    }
+    
+    .album-art {
+        width: 140px;
+        height: 140px;
+    }
+    
+    .track-name {
+        font-size: 1.75rem;
+    }
+    
+    .artist-name {
+        font-size: 1.35rem;
+    }
+    
+    .track-centerpiece {
+        gap: 28px;
+    }
+    
+    .guessed-container {
+        max-width: 380px;
+    }
+    
+    .guess-badge {
+        padding: 10px 20px;
+    }
+    
+    .guess-text {
+        font-size: 14px;
+    }
+    
+    #guess-input {
+        padding: 18px 24px;
+        font-size: 17px;
+    }
+    
+    .btn-send {
+        padding: 18px 28px;
+        font-size: 17px;
+    }
+    
+    .action-buttons {
+        max-width: 400px;
+        margin: 12px auto 0;
+    }
+    
+    .host-button {
+        width: 180px;
+        height: 180px;
+    }
+    
+    .host-button-label {
+        font-size: 15px;
+    }
+    
+    .loader-disclaimer,
+    .host-disclaimer {
+        font-size: 22px;
+    }
+}
+
+/* Tablets (768px - 1023px) */
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+    .info-zone {
+        padding: 28px 32px;
+    }
+    
+    .input-zone {
+        padding: 28px 32px 36px;
+    }
+    
+    .info-content,
+    .input-content {
+        max-width: 520px;
+    }
+    
+    .album-art {
+        width: 130px;
+        height: 130px;
+    }
+    
+    .track-name {
+        font-size: 1.6rem;
+    }
+    
+    .artist-name {
+        font-size: 1.3rem;
+    }
+    
+    .guessed-container {
+        max-width: 360px;
+    }
+    
+    .host-button {
+        width: 160px;
+        height: 160px;
+    }
+    
+    .host-button-label {
+        font-size: 14px;
+    }
+    
+    .loader-disclaimer,
+    .host-disclaimer {
+        font-size: 20px;
+    }
+}
+
+/* Large Phones (481px - 767px) */
+@media screen and (min-width: 481px) and (max-width: 767px) {
+    .info-zone {
+        padding: 24px 24px;
+    }
+    
+    .input-zone {
+        padding: 24px 24px 32px;
+    }
+    
+    .info-content,
+    .input-content {
+        max-width: 480px;
+    }
+    
+    .album-art {
+        width: 115px;
+        height: 115px;
+    }
+    
+    .track-name {
+        font-size: 1.4rem;
+    }
+    
+    .artist-name {
+        font-size: 1.15rem;
+    }
+    
+    .host-button {
+        width: 140px;
+        height: 140px;
+    }
+}
+
+/* Standard Phones (376px - 480px) */
 @media screen and (max-width: 480px) {
     /* Hide background glows on mobile */
     .glow-1,
@@ -826,14 +984,27 @@ body {
     .room-code {
         font-size: 12px;
     }
+    
+    .live-badge span {
+        font-size: 11px;
+    }
 
     .album-art {
         width: 100px;
         height: 100px;
+        border-radius: 12px;
+    }
+    
+    .album-cover {
+        border-radius: 12px;
+    }
+    
+    .track-centerpiece {
+        gap: 20px;
     }
 
     .track-name {
-        font-size: 1.25rem;
+        font-size: 1.2rem;
     }
 
     .artist-name {
@@ -842,6 +1013,7 @@ body {
 
     .guessed-container {
         max-width: 100%;
+        gap: 8px;
     }
 
     .guess-badge {
@@ -851,15 +1023,25 @@ body {
     .guess-text {
         font-size: 12px;
     }
+    
+    .guess-placeholder {
+        font-size: 11px;
+    }
+    
+    .last-guess-container {
+        min-height: 60px;
+    }
 
     #guess-input {
         padding: 14px 16px;
         font-size: 15px;
+        border-radius: 14px;
     }
 
     .btn-send {
         padding: 14px 20px;
         font-size: 15px;
+        border-radius: 40px;
     }
 
     .action-buttons {
@@ -875,35 +1057,104 @@ body {
     .host-button {
         width: 130px;
         height: 130px;
+        border-radius: 14px;
+    }
+    
+    .loader-disclaimer,
+    .host-disclaimer {
+        font-size: 16px;
+    }
+    
+    .loader-subtext {
+        font-size: 13px;
+    }
+    
+    .loader {
+        width: 70px;
     }
 
     .modal-box {
         padding: 24px;
+        border-radius: 16px;
+    }
+    
+    .modal-title {
+        font-size: 1.3rem;
+    }
+    
+    .modal-text {
+        font-size: 13px;
     }
 
     .modal-buttons {
         flex-direction: column;
     }
+    
+    .player-alert {
+        max-width: calc(100% - 32px);
+        padding: 6px 16px 6px 6px;
+    }
+    
+    .player-alert-img {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .player-alert-msg {
+        font-size: 13px;
+    }
 }
 
-@media screen and (max-width: 360px) {
+/* Small Phones (max-width: 375px) */
+@media screen and (max-width: 375px) {
     .info-zone,
     .input-zone {
         padding: 16px 12px;
     }
+    
+    .input-zone {
+        padding-bottom: 20px;
+    }
 
     .host-button {
-        width: 120px;
-        height: 120px;
+        width: 115px;
+        height: 115px;
     }
 
     .host-button-label {
         font-size: 11px;
     }
+    
+    .host-buttons {
+        gap: 12px;
+    }
+    
+    .loader-disclaimer,
+    .host-disclaimer {
+        font-size: 14px;
+    }
+    
+    .loader {
+        width: 60px;
+    }
+    
+    .did-you-know-fact {
+        font-size: 14px;
+        max-width: 280px;
+    }
+    
+    .btn-danger {
+        font-size: 13px;
+        padding: 10px 20px;
+    }
 
     .album-art {
-        width: 90px;
-        height: 90px;
+        width: 85px;
+        height: 85px;
+    }
+    
+    .track-centerpiece {
+        gap: 16px;
     }
 
     .track-name {
@@ -911,7 +1162,273 @@ body {
     }
 
     .artist-name {
+        font-size: 0.9rem;
+    }
+    
+    .header-row {
+        margin-bottom: 16px;
+    }
+    
+    .room-badge,
+    .live-badge {
+        padding: 5px 8px;
+        gap: 4px;
+    }
+    
+    .room-code {
+        font-size: 11px;
+        letter-spacing: 0.1em;
+    }
+    
+    .badge-icon,
+    .live-icon {
+        width: 10px;
+        height: 10px;
+    }
+    
+    .live-badge span {
+        font-size: 10px;
+    }
+    
+    .guess-slot {
+        height: 32px;
+    }
+    
+    .guess-badge {
+        padding: 5px 10px;
+        gap: 6px;
+    }
+    
+    .guess-icon {
+        width: 14px;
+        height: 14px;
+    }
+    
+    .guess-text {
+        font-size: 11px;
+    }
+    
+    .guess-placeholder {
+        font-size: 10px;
+    }
+    
+    .last-guess-container {
+        min-height: 55px;
+    }
+    
+    .last-guess-label {
+        font-size: 9px;
+    }
+    
+    .last-guess-box {
+        padding: 10px 12px;
+        border-radius: 10px;
+    }
+    
+    .last-guess {
+        font-size: 13px;
+    }
+    
+    #guess-input {
+        padding: 12px 14px;
+        font-size: 14px;
+        border-radius: 12px;
+    }
+    
+    .btn-send {
+        padding: 12px 18px;
+        font-size: 14px;
+    }
+    
+    .btn-next,
+    .btn-exit {
+        padding: 12px 16px;
+        font-size: 13px;
+    }
+    
+    .modal-box {
+        padding: 20px;
+    }
+    
+    .modal-icon svg {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .modal-title {
+        font-size: 1.2rem;
+    }
+    
+    .modal-text {
+        font-size: 12px;
+    }
+    
+    .btn-modal-cancel,
+    .btn-modal-confirm {
+        padding: 10px 16px;
+        font-size: 13px;
+    }
+    
+    .player-alert {
+        gap: 8px;
+        padding: 5px 12px 5px 5px;
+    }
+    
+    .player-alert-img {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .player-alert-msg {
+        font-size: 12px;
+    }
+    
+    .player-alert.show {
+        bottom: 16px;
+    }
+}
+
+/* Very Small Phones (max-width: 320px) */
+@media screen and (max-width: 320px) {
+    .info-zone,
+    .input-zone {
+        padding: 14px 10px;
+    }
+    
+    .host-button {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .host-button-label {
+        font-size: 10px;
+    }
+    
+    .album-art {
+        width: 75px;
+        height: 75px;
+    }
+    
+    .track-name {
+        font-size: 1rem;
+    }
+    
+    .artist-name {
+        font-size: 0.85rem;
+    }
+    
+    .loader-disclaimer,
+    .host-disclaimer {
+        font-size: 13px;
+    }
+    
+    #guess-input {
+        padding: 11px 12px;
+        font-size: 13px;
+    }
+    
+    .btn-send {
+        padding: 11px 16px;
+        font-size: 13px;
+    }
+}
+
+/* Landscape Phones */
+@media screen and (max-height: 500px) and (orientation: landscape) {
+    .player-controls {
+        min-height: auto;
+    }
+    
+    .info-zone {
+        padding: 16px 24px;
+        flex: 0;
+    }
+    
+    .input-zone {
+        padding: 16px 24px;
+    }
+    
+    .track-centerpiece {
+        flex-direction: row;
+        gap: 24px;
+        justify-content: center;
+    }
+    
+    .album-art-wrapper {
+        flex-shrink: 0;
+    }
+    
+    .album-art {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .track-info {
+        align-items: flex-start;
+        text-align: left;
+    }
+    
+    .track-name {
+        font-size: 1.1rem;
+    }
+    
+    .artist-name {
         font-size: 0.95rem;
+    }
+    
+    .guessed-container {
+        flex-direction: row;
+        gap: 12px;
+    }
+    
+    .guess-slot {
+        flex: 1;
+    }
+    
+    .header-row {
+        margin-bottom: 12px;
+    }
+    
+    .last-guess-container {
+        min-height: 50px;
+    }
+    
+    .input-area {
+        flex-direction: row;
+        gap: 12px;
+    }
+    
+    #guess-input {
+        flex: 1;
+    }
+    
+    .btn-send {
+        width: auto;
+        padding: 14px 24px;
+    }
+    
+    .action-buttons {
+        flex-direction: row;
+    }
+    
+    .loader-content,
+    .host-selection-content {
+        min-height: auto;
+        padding: 20px;
+    }
+    
+    .loader {
+        width: 50px;
+    }
+    
+    .loader-disclaimer,
+    .host-disclaimer {
+        margin-top: 0;
+        font-size: 14px;
+    }
+    
+    .did-you-know-fact {
+        margin-top: 20px;
     }
 }
 
@@ -950,7 +1467,7 @@ body {
 /* ===== PLAYER CONNECTION ALERT ===== */
 .player-alert {
     position: fixed;
-    bottom: -80px;
+    bottom: -100px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
@@ -961,22 +1478,29 @@ body {
     border-radius: 50px;
     padding: 8px 20px 8px 8px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-    transition: bottom 0.4s ease;
-    z-index: 1000;
+    transition: bottom 0.4s ease, box-shadow 0.3s ease;
+    z-index: 10000;
+    filter: none;
 }
 
 .player-alert.show {
-    bottom: 24px;
+    bottom: 32px;
 }
 
 .player-alert.join {
     border-color: var(--accent);
-    box-shadow: 0 0 20px var(--accent-glow);
+    box-shadow: 0 0 30px 8px var(--accent-glow),
+                0 0 60px 4px rgba(29, 185, 84, 0.15),
+                0 8px 32px rgba(0, 0, 0, 0.4);
+    filter: drop-shadow(0 0 20px rgba(29, 185, 84, 0.4));
 }
 
 .player-alert.leave {
     border-color: var(--danger);
-    box-shadow: 0 0 20px rgba(224, 37, 0, 0.2);
+    box-shadow: 0 0 30px 8px rgba(224, 37, 0, 0.3),
+                0 0 60px 4px rgba(224, 37, 0, 0.15),
+                0 8px 32px rgba(0, 0, 0, 0.4);
+    filter: drop-shadow(0 0 20px rgba(224, 37, 0, 0.4));
 }
 
 .player-alert-img {

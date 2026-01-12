@@ -278,7 +278,6 @@ body {
     left: 0;
     transition: bottom 0.7s ease-in-out;
     z-index: 1000;
-    overflow: hidden;
 }
 
 .podium-alerts-wrap {
