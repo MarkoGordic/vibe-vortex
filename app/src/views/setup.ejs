@@ -24,13 +24,22 @@
         </div>
         <% } %>
 
-            <div class="card" id="join">
+        <div class="card" id="join">
             <img src="/img/join.png" alt="Join">
             <h2>JOIN THE VIBE</h2>
             <p>Jump into the action! Enter a room code to join friends in an existing game. Be part of the excitement and make your mark!</p>
             <input id="roomCodeInput" maxlength='7'/>
             <button id="joinButton">Join</button>
         </div>
+
+        <% if (isAdmin === true) { %>
+        <div class="card admin" id="admin-panel">
+            <img src="/img/logo.png" alt="Admin">
+            <h2>ADMIN PANEL</h2>
+            <p>Manage users, permissions, and account security from a dedicated control room.</p>
+            <button onclick="window.location.href = '/admin'">Open Admin Panel</button>
+        </div>
+        <% } %>
     </div>
 </div>
 

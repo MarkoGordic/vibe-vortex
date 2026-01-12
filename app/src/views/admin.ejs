@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Marko Gordic">
+    <link rel="icon" type="image/x-icon" href="/img/logo.png">
+    <meta name="description" content="Admin panel for Vibe Vortex">
+
+    <title>Vibe Vortex | Admin Panel</title>
+
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+    <div class="admin-shell">
+        <header class="admin-header">
+            <div class="brand">
+                <img src="/img/logo.png" alt="Vibe Vortex">
+                <div>
+                    <p class="kicker">Vibe Vortex</p>
+                    <h1>Admin Panel</h1>
+                </div>
+            </div>
+            <div class="header-actions">
+                <a class="ghost-button" href="/vortex/setup">Back to Vibe</a>
+                <a class="ghost-button" href="/api/logout">Logout</a>
+            </div>
+        </header>
+
+        <section class="hero">
+            <div class="hero-copy">
+                <h2>User Management</h2>
+                <p>Control access, reset credentials, and keep the community healthy without leaving the dashboard.</p>
+            </div>
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <span class="stat-label">Total users</span>
+                    <span class="stat-value" id="stat-total">--</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Admins</span>
+                    <span class="stat-value" id="stat-admins">--</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Spotify linked</span>
+                    <span class="stat-value" id="stat-spotify">--</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="toolbar">
+            <div class="search-field">
+                <label for="searchInput">Search users</label>
+                <input type="search" id="searchInput" placeholder="Search by username or email">
+            </div>
+            <div class="toolbar-actions">
+                <button class="ghost-button" id="refreshButton">Refresh</button>
+            </div>
+        </section>
+
+        <section class="table-panel">
+            <div class="table-header">
+                <div>
+                    <h3>Accounts</h3>
+                    <p class="muted" id="resultCount">-- results</p>
+                </div>
+                <div class="page-size">
+                    <label for="pageSize">Rows</label>
+                    <select id="pageSize">
+                        <option value="10">10</option>
+                        <option value="20" selected>20</option>
+                        <option value="50">50</option>
+                    </select>
+                </div>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Role</th>
+                            <th>Spotify</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userRows"></tbody>
+                </table>
+            </div>
+            <div class="pagination">
+                <button class="ghost-button" id="prevPage">Previous</button>
+                <span class="muted" id="pageInfo">Page 1</span>
+                <button class="ghost-button" id="nextPage">Next</button>
+            </div>
+        </section>
+    </div>
+
+    <div class="modal" id="passwordModal" aria-hidden="true">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Reset Password</h3>
+                <button class="close-button" id="closeModal" aria-label="Close">&times;</button>
+            </div>
+            <p class="muted">Set a new password for <strong id="modalUser">user</strong>.</p>
+            <div class="modal-form">
+                <label for="newPassword">New password</label>
+                <input type="password" id="newPassword" placeholder="Minimum 8 characters">
+            </div>
+            <div class="modal-actions">
+                <button class="ghost-button" id="cancelModal">Cancel</button>
+                <button class="primary-button" id="savePassword">Save Password</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast" aria-live="polite"></div>
+
+    <script>
+        window.ADMIN_CONTEXT = {
+            currentUserId: <%= currentUserId %>
+        };
+    </script>
+    <script src="/js/admin.js"></script>
+</body>
+</html>

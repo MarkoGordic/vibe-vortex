@@ -62,8 +62,15 @@ function createVortexRoutes(io) {
         }
     });
 
-    router.get('/setup', isAuthorized, redirectIfInActiveRoom, (req, res) => {
-        res.render('setup', { isPremium: req.session.premium });
+    router.get('/setup', isAuthorized, redirectIfInActiveRoom, async (req, res) => {
+        try {
+            const isAdmin = await db.isUserAdmin(req.session.userId);
+            req.session.isAdmin = isAdmin;
+            res.render('setup', { isPremium: req.session.premium, isAdmin });
+        } catch (error) {
+            console.error('Error checking admin status:', error);
+            res.status(500).json({ success: false, message: 'Internal server error' });
+        }
     });
 
     router.get('/new', isAuthorized, isPremium, redirectIfInActiveRoom, async (req, res) => {

@@ -32,7 +32,6 @@ body {
     overflow-y: auto;
 }
 
-
 .left-container {
     width: 70%;
     float: left;
@@ -65,15 +64,6 @@ body {
     position: relative;
     box-shadow: -10px 0 40px rgba(0, 0, 0, 0.5);
     overflow-y: auto;
-}
-
-.right-container::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at 20% 10%, rgba(29, 185, 84, 0.12), transparent 40%),
-        radial-gradient(circle at 80% 90%, rgba(255, 255, 255, 0.08), transparent 40%);
-    pointer-events: none;
 }
 
 .footer {
@@ -124,12 +114,6 @@ body {
     width: 350px;
     max-width: 90vw;
     animation: floatIn 0.8s ease;
-    background: rgba(0, 0, 0, 0.45);
-    padding: 26px;
-    border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 22px 40px rgba(0, 0, 0, 0.45);
-    backdrop-filter: blur(10px);
 }
 
 .login-container input[type="email"],
@@ -202,7 +186,6 @@ body {
     display: block;
     border-radius: 6px;
     box-shadow: 0 12px 25px -20px rgba(29, 185, 84, 0.7);
-    letter-spacing: 0.04em;
     transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
 }
 
@@ -272,7 +255,6 @@ body {
     margin: 20px 0;
 }
 
-
 .file-upload-label {
     display: block;
     margin-bottom: 5px;
@@ -315,7 +297,6 @@ body {
     }
 }
 
-
 @media screen and (max-width: 1400px) {
     .left-container {
         width: 60%;
@@ -340,18 +321,6 @@ body {
     }
     .right-container {
         width: 100%;
-    }
-}
-
-@media screen and (min-width: 1200px) {
-    .right-container {
-        padding: 40px 0;
-    }
-
-    .login-container form,
-    .register-container form,
-    .spotify-content {
-        width: 380px;
     }
 }
 

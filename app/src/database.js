@@ -79,6 +79,16 @@ class Database {
         return rows.length > 0 ? rows[0] : null;
     }
 
+    async getUserById(id) {
+        const [rows] = await pool.query('SELECT * FROM users WHERE id = ? LIMIT 1', [id]);
+        return rows.length > 0 ? rows[0] : null;
+    }
+
+    async isUserAdmin(id) {
+        const [rows] = await pool.query('SELECT admin FROM users WHERE id = ? LIMIT 1', [id]);
+        return rows.length > 0 && Boolean(rows[0].admin);
+    }
+
     async ensureAdminAccount(adminConfig) {
         const { username, email, password } = adminConfig || {};
         if (!username || !email || !password) {
@@ -106,6 +116,67 @@ class Database {
         );
         console.info(`[INFO] : Admin account created for username ${username}.`);
         return { created: true, updated: false, skipped: false };
+    }
+
+    async listUsers({ search = '', limit = 20, offset = 0 } = {}) {
+        const trimmedSearch = search.trim();
+        const params = [];
+        let whereClause = '';
+
+        if (trimmedSearch) {
+            whereClause = 'WHERE username LIKE ? OR email LIKE ?';
+            const likeTerm = `%${trimmedSearch}%`;
+            params.push(likeTerm, likeTerm);
+        }
+
+        const [rows] = await pool.query(
+            `
+                SELECT id, username, email, admin, spotify_id, profile_image
+                FROM users
+                ${whereClause}
+                ORDER BY id DESC
+                LIMIT ? OFFSET ?
+            `,
+            [...params, limit, offset]
+        );
+
+        const [countRows] = await pool.query(
+            `SELECT COUNT(*) as total FROM users ${whereClause}`,
+            params
+        );
+
+        return { users: rows, total: countRows[0]?.total || 0 };
+    }
+
+    async getUserStats() {
+        const [rows] = await pool.query(`
+            SELECT
+                COUNT(*) as total,
+                COALESCE(SUM(admin = 1), 0) as admins,
+                COALESCE(SUM(spotify_id IS NOT NULL), 0) as spotify_linked
+            FROM users
+        `);
+        return rows.length > 0 ? rows[0] : { total: 0, admins: 0, spotify_linked: 0 };
+    }
+
+    async countAdmins() {
+        const [rows] = await pool.query('SELECT COUNT(*) as total FROM users WHERE admin = 1');
+        return rows.length > 0 ? rows[0].total : 0;
+    }
+
+    async updateUserAdmin(id, isAdmin) {
+        const [result] = await pool.query('UPDATE users SET admin = ? WHERE id = ?', [isAdmin ? 1 : 0, id]);
+        return result.affectedRows > 0;
+    }
+
+    async updateUserPassword(id, hashedPassword) {
+        const [result] = await pool.query('UPDATE users SET password = ? WHERE id = ?', [hashedPassword, id]);
+        return result.affectedRows > 0;
+    }
+
+    async deleteUser(id) {
+        const [result] = await pool.query('DELETE FROM users WHERE id = ?', [id]);
+        return result.affectedRows > 0;
     }
 
     async getUsersInfoByIds(userIds) {

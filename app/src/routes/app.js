@@ -63,6 +63,7 @@ router.post('/login', async (req, res) => {
         if (match) {
             req.session.userId = user.id;
             req.session.spotify_id = user.spotify_id;
+            req.session.isAdmin = Boolean(user.admin);
 
             console.log(`[INFO] : Login successful for username ${user.username}.`);
             if (user.spotify_id === null) {

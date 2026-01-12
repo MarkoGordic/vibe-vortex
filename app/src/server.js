@@ -10,6 +10,7 @@ const { db } = require('./database');
 const appRoutes = require('./routes/app');
 const spotifyRoutes = require('./routes/spotify');
 const createVortexRoutes = require('./routes/vortex');
+const adminRoutes = require('./routes/admin');
 
 const app = express();
 const server = http.createServer(app);
@@ -49,6 +50,7 @@ app.use(session({
 app.use('/spotify', cors(), spotifyRoutes);
 app.use('/api', cors(), appRoutes);
 app.use('/vortex', cors(), createVortexRoutes(io));
+app.use('/admin', adminRoutes);
 
 app.get('/', (req, res) => {
     const spotifyId = req.session && req.session.spotify_id ? req.session.spotify_id : null;

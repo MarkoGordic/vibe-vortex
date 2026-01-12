@@ -4,6 +4,7 @@
     --bg: #171717;
     --accent: #1DB954;
     --accent-soft: rgba(29, 185, 84, 0.25);
+    --admin-accent: #d8b07a;
     --text: #ffffff;
     --muted: #cccccc;
 }
@@ -97,6 +98,39 @@ body {
 
 #join {
     animation-delay: 0.2s;
+}
+
+.admin {
+    animation-delay: 0.3s;
+}
+
+.card.admin {
+    background: linear-gradient(160deg, rgba(30, 30, 30, 0.95), rgba(18, 18, 18, 0.95));
+    border-color: rgba(255, 255, 255, 0.06);
+}
+
+.card.admin img {
+    max-width: 200px;
+    width: 70%;
+}
+
+.card.admin::after {
+    background: linear-gradient(90deg, transparent, rgba(216, 176, 122, 0.6), transparent);
+    opacity: 0.4;
+}
+
+.card.admin h2 {
+    color: var(--admin-accent);
+}
+
+.card.admin button {
+    background-color: transparent;
+    color: var(--admin-accent);
+    border: 1px solid rgba(216, 176, 122, 0.45);
+}
+
+.card.admin button:hover {
+    background-color: rgba(216, 176, 122, 0.15);
 }
 
 .card:hover {
