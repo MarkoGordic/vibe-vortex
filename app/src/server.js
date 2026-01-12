@@ -22,6 +22,11 @@ const io = new Server(server, {
 
 const PORT = process.env.PORT || 1337;
 const SESSION_SECRET = process.env.SESSION_SECRET || 'vibe-vortex-session-secret';
+const ADMIN_CONFIG = {
+    username: process.env.ADMIN_USERNAME,
+    email: process.env.ADMIN_EMAIL,
+    password: process.env.ADMIN_PASSWORD
+};
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -87,6 +92,7 @@ io.on('connection', (socket) => {
 async function start() {
     try {
         await db.migrate();
+        await db.ensureAdminAccount(ADMIN_CONFIG);
         server.listen(PORT, () => {
             console.log(`[DEBUG] : Vibe Vortex is now listening on port ${PORT}`);
         });

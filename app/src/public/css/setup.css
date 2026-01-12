@@ -57,11 +57,11 @@ body {
     gap: 40px;
     position: relative;
     z-index: 1;
-    max-width: 1100px;
+    max-width: 1200px;
 }
 
 .card {
-    width: 340px;
+    width: 360px;
     max-width: 92vw;
     background: linear-gradient(160deg, rgba(36, 36, 36, 0.95), rgba(20, 20, 20, 0.95));
     border-radius: 12px;
@@ -112,7 +112,7 @@ body {
 
 .card img {
     width: 100%;
-    max-width: 260px;
+    max-width: 300px;
     border-radius: 10px;
     height: auto;
     margin-bottom: 15px;
@@ -191,16 +191,16 @@ input::placeholder {
 
 @media screen and (min-width: 1200px) {
     .type-container {
-        gap: 60px;
+        gap: 70px;
     }
 
     .card {
-        width: 340px;
-        padding: 30px;
+        width: 420px;
+        padding: 32px;
     }
 
     .card h2 {
-        font-size: 1.8em;
+        font-size: 2em;
     }
 }
 

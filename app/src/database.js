@@ -1,4 +1,5 @@
 const mysql = require('mysql2/promise');
+const bcrypt = require('bcrypt');
 
 const pool = mysql.createPool({
     host: process.env.DB_HOST || 'localhost',
@@ -71,6 +72,40 @@ class Database {
     async getUserByEmail(email) {
         const [rows] = await pool.query('SELECT * FROM users WHERE email = ? LIMIT 1', [email]);
         return rows.length > 0 ? rows[0] : null;
+    }
+
+    async getUserByUsername(username) {
+        const [rows] = await pool.query('SELECT * FROM users WHERE username = ? LIMIT 1', [username]);
+        return rows.length > 0 ? rows[0] : null;
+    }
+
+    async ensureAdminAccount(adminConfig) {
+        const { username, email, password } = adminConfig || {};
+        if (!username || !email || !password) {
+            console.warn('[WARN] : Admin account not configured. Set ADMIN_USERNAME, ADMIN_EMAIL, and ADMIN_PASSWORD in .env.');
+            return { created: false, updated: false, skipped: true };
+        }
+
+        const userByUsername = await this.getUserByUsername(username);
+        const userByEmail = userByUsername ? null : await this.getUserByEmail(email);
+        const existingUser = userByUsername || userByEmail;
+
+        if (existingUser) {
+            if (!existingUser.admin) {
+                await pool.query('UPDATE users SET admin = 1 WHERE id = ?', [existingUser.id]);
+                console.info(`[INFO] : Admin account updated for username ${existingUser.username}.`);
+                return { created: false, updated: true, skipped: false };
+            }
+            return { created: false, updated: false, skipped: false };
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+        await pool.query(
+            'INSERT INTO users (username, password, email, admin) VALUES (?, ?, ?, ?)',
+            [username, hashedPassword, email, true]
+        );
+        console.info(`[INFO] : Admin account created for username ${username}.`);
+        return { created: true, updated: false, skipped: false };
     }
 
     async getUsersInfoByIds(userIds) {
