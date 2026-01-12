@@ -112,6 +112,7 @@ body {
 
 .card img {
     width: 100%;
+    max-width: 260px;
     border-radius: 10px;
     height: auto;
     margin-bottom: 15px;
@@ -152,11 +153,11 @@ input {
     margin-left: 0;
     border: none;
     padding: 0;
-    width: 12.5ch;
-    background: repeating-linear-gradient(90deg, dimgrey 0, dimgrey 1ch, transparent 0, transparent 1.5ch)
-        0 100%/ 12ch 2px no-repeat;
-    font: 5ch "droid sans mono", consolas, monospace;
-    letter-spacing: 0.5ch;
+    width: 9.5ch;
+    background: repeating-linear-gradient(90deg, dimgrey 0, dimgrey 1ch, transparent 0, transparent 1.35ch)
+        0 100%/ 9.5ch 2px no-repeat;
+    font: 4.2ch "droid sans mono", consolas, monospace;
+    letter-spacing: 0.35ch;
     color: var(--text);
     transition: color 0.3s ease;
     text-transform: uppercase;
@@ -165,6 +166,8 @@ input {
 .card input {
     align-self: center;
 }
+
+ 
 
 input:focus {
     outline: none;
@@ -218,7 +221,7 @@ input::placeholder {
     }
 
     input {
-        font-size: 4ch;
+        font-size: 3.6ch;
     }
 }
 
