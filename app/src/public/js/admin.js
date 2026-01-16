@@ -8,7 +8,9 @@ const state = {
     stats: { total: 0, admins: 0, spotify_linked: 0 },
     users: [],
     activeUserId: null,
-    activeUsername: ''
+    activeUsername: '',
+    lobbyLines: [],
+    lobbyLinesChanged: false
 };
 
 const elements = {
@@ -29,7 +31,15 @@ const elements = {
     savePassword: document.getElementById('savePassword'),
     cancelModal: document.getElementById('cancelModal'),
     closeModal: document.getElementById('closeModal'),
-    toast: document.getElementById('toast')
+    toast: document.getElementById('toast'),
+    // Tab elements
+    tabButtons: document.querySelectorAll('.tab-button'),
+    tabContents: document.querySelectorAll('.tab-content'),
+    // Settings elements
+    lobbyLinesList: document.getElementById('lobbyLinesList'),
+    newLineInput: document.getElementById('newLineInput'),
+    addLineButton: document.getElementById('addLineButton'),
+    lineCount: document.getElementById('lineCount')
 };
 
 function escapeHtml(text) {
@@ -331,5 +341,187 @@ document.addEventListener('keydown', (event) => {
         closeModal();
     }
 });
+
+// Tab Navigation
+function switchTab(tabName) {
+    elements.tabButtons.forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.tab === tabName);
+    });
+    elements.tabContents.forEach(content => {
+        content.classList.toggle('active', content.id === `tab-${tabName}`);
+    });
+
+    if (tabName === 'settings') {
+        fetchLobbyLines();
+    }
+}
+
+elements.tabButtons.forEach(btn => {
+    btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+});
+
+// Lobby Lines Management
+function escapeHtmlForLines(text) {
+    return String(text || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+function renderLobbyLines() {
+    const count = state.lobbyLines.length;
+    elements.lineCount.textContent = `${count} line${count !== 1 ? 's' : ''}`;
+
+    if (count === 0) {
+        elements.lobbyLinesList.innerHTML = `
+            <div class="lines-placeholder">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="17" y1="10" x2="3" y2="10"></line>
+                    <line x1="21" y1="6" x2="3" y2="6"></line>
+                    <line x1="21" y1="14" x2="3" y2="14"></line>
+                    <line x1="17" y1="18" x2="3" y2="18"></line>
+                </svg>
+                <p>No lobby messages yet</p>
+                <span class="muted">Add your first message above!</span>
+            </div>
+        `;
+        return;
+    }
+
+    const lines = state.lobbyLines.map((line, index) => `
+        <div class="line-item" data-index="${index}">
+            <span class="line-number">${index + 1}</span>
+            <span class="line-text">${escapeHtmlForLines(line)}</span>
+            <div class="line-actions">
+                <button type="button" class="ghost-button line-edit-btn" data-index="${index}" title="Edit">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                </button>
+                <button type="button" class="danger-button line-delete-btn" data-index="${index}" title="Delete">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    `).join('');
+
+    elements.lobbyLinesList.innerHTML = lines;
+}
+
+async function fetchLobbyLines() {
+    try {
+        const response = await fetch('/admin/settings/lobby-lines');
+        const payload = await response.json();
+
+        if (!response.ok || !payload.success) {
+            throw new Error(payload.message || 'Failed to fetch lobby lines');
+        }
+
+        state.lobbyLines = payload.lines || [];
+        state.lobbyLinesChanged = false;
+        renderLobbyLines();
+    } catch (error) {
+        console.error(error);
+        showToast('Failed to load lobby lines', 'error');
+    }
+}
+
+async function saveLobbyLines() {
+    try {
+        const response = await fetch('/admin/settings/lobby-lines', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ lines: state.lobbyLines })
+        });
+        const payload = await response.json();
+
+        if (!response.ok || !payload.success) {
+            throw new Error(payload.message || 'Failed to save');
+        }
+
+        showToast('Saved');
+    } catch (error) {
+        console.error(error);
+        showToast(error.message || 'Failed to save', 'error');
+    }
+}
+
+async function addLobbyLine() {
+    const text = elements.newLineInput.value.trim();
+    if (!text) {
+        showToast('Please enter a message', 'error');
+        return;
+    }
+
+    if (state.lobbyLines.length >= 1000) {
+        showToast('Maximum 1000 lines allowed', 'error');
+        return;
+    }
+
+    state.lobbyLines.push(text);
+    elements.newLineInput.value = '';
+    renderLobbyLines();
+    await saveLobbyLines();
+}
+
+async function deleteLobbyLine(index) {
+    if (index >= 0 && index < state.lobbyLines.length) {
+        state.lobbyLines.splice(index, 1);
+        renderLobbyLines();
+        await saveLobbyLines();
+    }
+}
+
+async function editLobbyLine(index) {
+    const currentText = state.lobbyLines[index];
+    const newText = prompt('Edit lobby message:', currentText);
+    
+    if (newText !== null && newText.trim() !== '') {
+        state.lobbyLines[index] = newText.trim();
+        renderLobbyLines();
+        await saveLobbyLines();
+    }
+}
+
+// Event listeners for lobby lines
+if (elements.addLineButton) {
+    elements.addLineButton.addEventListener('click', addLobbyLine);
+}
+if (elements.newLineInput) {
+    elements.newLineInput.addEventListener('keypress', (event) => {
+        if (event.key === 'Enter') {
+            addLobbyLine();
+        }
+    });
+}
+if (elements.lobbyLinesList) {
+    elements.lobbyLinesList.addEventListener('click', (event) => {
+        const target = event.target;
+        const deleteBtn = target.closest('.line-delete-btn');
+        const editBtn = target.closest('.line-edit-btn');
+        
+        if (deleteBtn) {
+            event.preventDefault();
+            event.stopPropagation();
+            const index = Number.parseInt(deleteBtn.dataset.index, 10);
+            if (!Number.isNaN(index)) {
+                deleteLobbyLine(index);
+            }
+        } else if (editBtn) {
+            event.preventDefault();
+            event.stopPropagation();
+            const index = Number.parseInt(editBtn.dataset.index, 10);
+            if (!Number.isNaN(index)) {
+                editLobbyLine(index);
+            }
+        }
+    });
+}
 
 fetchUsers();

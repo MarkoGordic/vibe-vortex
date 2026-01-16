@@ -6,6 +6,72 @@ let currentTrackName = '';
 let currentArtistName = '';
 let currentAlbumCover = '';
 let currentUserInfo = null;
+let lobbyLineInterval = null;
+
+// Lobby line fetching and display
+async function fetchAndDisplayLobbyLine() {
+    const factElement = document.querySelector('.did-you-know-fact');
+    if (!factElement) return;
+
+    try {
+        const response = await fetch('/vortex/lobby-line');
+        if (!response.ok) {
+            throw new Error(`Failed to load lobby line: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        // Fade out first
+        factElement.style.opacity = '0';
+        
+        setTimeout(() => {
+            if (data.success && data.line) {
+                factElement.textContent = data.line;
+            } else {
+                factElement.textContent = '';
+            }
+            // Fade in
+            factElement.style.opacity = '1';
+        }, 300);
+    } catch (error) {
+        console.error('Failed to fetch lobby line:', error);
+        // On error, show default message
+        factElement.style.opacity = '0';
+        setTimeout(() => {
+            factElement.textContent = '';
+            factElement.style.opacity = '1';
+        }, 300);
+    }
+}
+
+// Start fetching lobby lines when in lobby
+function startLobbyLineRotation() {
+    const loaderContent = document.getElementById('loader-content');
+    // Check if loader is visible (not explicitly hidden)
+    if (loaderContent) {
+        const computedStyle = window.getComputedStyle(loaderContent);
+        const isHidden = loaderContent.style.display === 'none' || computedStyle.display === 'none';
+        if (!isHidden) {
+            // Fetch immediately
+            fetchAndDisplayLobbyLine();
+            // Then fetch every 8 seconds
+            lobbyLineInterval = setInterval(fetchAndDisplayLobbyLine, 8000);
+        }
+    }
+}
+
+// Stop fetching lobby lines
+function stopLobbyLineRotation() {
+    if (lobbyLineInterval) {
+        clearInterval(lobbyLineInterval);
+        lobbyLineInterval = null;
+    }
+}
+
+// Initialize lobby lines on page load
+document.addEventListener('DOMContentLoaded', () => {
+    startLobbyLineRotation();
+});
 
 // Player connection events
 socket.on('player_connected', (data) => {
@@ -23,6 +89,7 @@ socket.on('room_joined', (data) => {
     
     // If game already started, show the player controls immediately
     if (data.gameStarted && !started) {
+        stopLobbyLineRotation();
         let loader = document.getElementById('loader-content');
         if (loader) {
             loader.parentNode.removeChild(loader);
@@ -69,6 +136,7 @@ function processPlayerAlertQueue() {
 
 socket.on('server_command', (data) => {
     if(data === "game_ready"){
+        stopLobbyLineRotation();
         let loader = document.getElementById('loader-content');
         loader.parentNode.removeChild(loader);
         document.getElementById('player-controls').style.display = 'flex';
@@ -293,38 +361,13 @@ const currentRoomCode = roomCode;
 // Now fetch user and join room
 fetchCurrentUserID();
 
-const facts = [
-    'Spotify streams over 100,000 tracks every minute.',
-    'The first song on Spotify was added in 2006.',
-    'A typical human heart beats in time with music.',
-    'Shorter intros make songs more likely to be replayed.'
-];
-
-function showFact() {
-    const factElement = document.querySelector('.did-you-know-fact');
-    if (!facts.length) {
-        return;
-    }
-    const randomFact = facts[Math.floor(Math.random() * facts.length)];
-    factElement.textContent = `${randomFact}`;
-    factElement.style.opacity = 1;
-    setTimeout(() => {
-        factElement.style.opacity = 0;
-    }, 7000);
-}
-
-setInterval(() => {
-    if (!started) {
-        showFact();
-    }
-}, 8000);
-
 function switchToPlayerMode() {
     var hostSelection = document.getElementById('host-selection');
     var loaderContent = document.getElementById('loader-content');
 
     hostSelection.style.display = 'none';
     loaderContent.style.display = 'block';
+    startLobbyLineRotation();
 }
 
 // Update room code display

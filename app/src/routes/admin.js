@@ -177,4 +177,40 @@ router.delete('/users/:id', requireAdminApi, async (req, res) => {
     }
 });
 
+// Settings Routes
+router.get('/settings/lobby-lines', requireAdminApi, async (req, res) => {
+    try {
+        const lines = await db.getLobbyLines();
+        res.json({ success: true, lines });
+    } catch (error) {
+        console.error('[ERROR] : Failed to fetch lobby lines', error);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+});
+
+router.put('/settings/lobby-lines', requireAdminApi, async (req, res) => {
+    const { lines } = req.body;
+
+    if (!Array.isArray(lines)) {
+        return res.status(400).json({ success: false, message: 'Lines must be an array' });
+    }
+
+    if (lines.length > 1000) {
+        return res.status(400).json({ success: false, message: 'Maximum 1000 lines allowed' });
+    }
+
+    const invalidLines = lines.some(line => typeof line !== 'string');
+    if (invalidLines) {
+        return res.status(400).json({ success: false, message: 'All lines must be strings' });
+    }
+
+    try {
+        await db.setLobbyLines(lines);
+        res.json({ success: true });
+    } catch (error) {
+        console.error('[ERROR] : Failed to save lobby lines', error);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+});
+
 module.exports = router;

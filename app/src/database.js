@@ -45,8 +45,17 @@ class Database {
             );
         `;
 
+        const createSettingsTable = `
+            CREATE TABLE IF NOT EXISTS settings (
+                id          INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+                setting_key VARCHAR(100) NOT NULL UNIQUE,
+                setting_value LONGTEXT
+            );
+        `;
+
         await pool.execute(createUsersTable);
         await pool.execute(createGamesTable);
+        await pool.execute(createSettingsTable);
         console.info('[INFO] : Database migration completed.');
     }
 
@@ -358,6 +367,49 @@ class Database {
         }
 
         return [];
+    }
+
+    // Settings methods
+    async getSetting(key) {
+        const [rows] = await pool.query('SELECT setting_value FROM settings WHERE setting_key = ? LIMIT 1', [key]);
+        if (rows.length === 0) {
+            return null;
+        }
+        try {
+            return JSON.parse(rows[0].setting_value);
+        } catch {
+            return rows[0].setting_value;
+        }
+    }
+
+    async setSetting(key, value) {
+        const jsonValue = JSON.stringify(value);
+        await pool.query(
+            `INSERT INTO settings (setting_key, setting_value) VALUES (?, ?)
+             ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value)`,
+            [key, jsonValue]
+        );
+        return true;
+    }
+
+    async getLobbyLines() {
+        const lines = await this.getSetting('lobby_lines');
+        return Array.isArray(lines) ? lines : [];
+    }
+
+    async setLobbyLines(lines) {
+        const sanitizedLines = Array.isArray(lines) 
+            ? lines.filter(line => typeof line === 'string' && line.trim().length > 0).slice(0, 1000)
+            : [];
+        return this.setSetting('lobby_lines', sanitizedLines);
+    }
+
+    async getRandomLobbyLine() {
+        const lines = await this.getLobbyLines();
+        if (lines.length === 0) {
+            return null;
+        }
+        return lines[Math.floor(Math.random() * lines.length)];
     }
 }
 

@@ -279,6 +279,17 @@ function createVortexRoutes(io) {
         }
     });
 
+    // Public API for lobby lines (used by players waiting in lobby)
+    router.get('/lobby-line', isAuthorized, async (req, res) => {
+        try {
+            const line = await db.getRandomLobbyLine();
+            res.json({ success: true, line });
+        } catch (error) {
+            console.error('Error fetching lobby line:', error);
+            res.status(500).json({ success: false, message: 'Internal server error' });
+        }
+    });
+
     return router;
 }
 
